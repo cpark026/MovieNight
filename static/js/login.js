@@ -74,12 +74,14 @@ authForm.addEventListener('submit', async function(e) {
 function showError(message) {
     errorMessage.textContent = message;
     errorMessage.style.display = 'block';
+    errorMessage.style.color = 'white';
     successMessage.style.display = 'none';
 }
 
 function showSuccess(message) {
     successMessage.textContent = message;
     successMessage.style.display = 'block';
+    successMessage.style.color = 'white';
     errorMessage.style.display = 'none';
 }
 

@@ -15,7 +15,10 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
 
 # Add the app directory to path for model imports
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "movies.db")
+CSV_PATH = os.path.join(BASE_DIR, "output.csv")
+sys.path.insert(0, BASE_DIR)
 
 # Initialize model once at startup
 try:
@@ -41,9 +44,9 @@ def verify_password(password, stored_hash):
     """Verify password against stored hash"""
     return hash_password(password) == stored_hash
 
-def create_users_table(db_path="movies.db"):
+def create_users_table():
     """Create users table if it doesn't exist"""
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     
     cur.execute("""
@@ -326,11 +329,10 @@ def get_recommendations():
             print("[DEBUG] No recommendations returned from model")
             return jsonify({"error": "No recommendations found"}), 404
         
-        csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output.csv")
-        print(f"[DEBUG] Loading CSV from: {csv_path}")
+        print(f"[DEBUG] Loading CSV from: {CSV_PATH}")
         movie_data = {}
         
-        with open(csv_path, 'r', encoding='utf-8') as f:
+        with open(CSV_PATH, 'r', encoding='utf-8') as f:
             reader = csv.reader(f)
             next(reader)
             for row in reader:
@@ -425,11 +427,10 @@ def get_last_watched_recommendations():
             print("[DEBUG] No recommendations returned from model")
             return jsonify({"error": "No recommendations found"}), 404
         
-        csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output.csv")
-        print(f"[DEBUG] Loading CSV from: {csv_path}")
+        print(f"[DEBUG] Loading CSV from: {CSV_PATH}")
         movie_data = {}
         
-        with open(csv_path, 'r', encoding='utf-8') as f:
+        with open(CSV_PATH, 'r', encoding='utf-8') as f:
             reader = csv.reader(f)
             next(reader)
             for row in reader:
@@ -524,11 +525,10 @@ def get_most_common_genre_recommendations():
             print("[DEBUG] No recommendations returned from model")
             return jsonify({"error": "No recommendations found"}), 404
 
-        csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output.csv")
-        print(f"[DEBUG] Loading CSV from: {csv_path}")
+        print(f"[DEBUG] Loading CSV from: {CSV_PATH}")
 
         movie_data = {}
-        with open(csv_path, "r", encoding="utf-8") as f:
+        with open(CSV_PATH, "r", encoding="utf-8") as f:
             reader = csv.reader(f)
             next(reader)
             for row in reader:
@@ -639,8 +639,8 @@ def get_most_common_genre():
         print("Error in getMostCommonGenre:", e)
         return jsonify({"error": str(e)}), 500
 
-def create_movies_table(db_path="movies.db"):
-    conn = sqlite3.connect(db_path)
+def create_movies_table():
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
     cur.execute("""
