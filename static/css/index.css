@@ -94,6 +94,27 @@ button:hover {
      box-sizing: border-box;
 }
 
+/* Large tablets / small laptops — show 3 columns */
+@media (max-width: 1100px) {
+    .recommendations-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Tablets — show 2 columns */
+@media (max-width: 800px) {
+    .recommendations-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Phones — show 1 column */
+@media (max-width: 500px) {
+    .recommendications-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
 
 
 /* ==========================================
