@@ -105,6 +105,7 @@ build/
 # Markdown files (keep documentation and README)
 *.md
 !README.md
+!README_TUNER.md
 !HYPERPARAMETER_TUNER_GUIDE.md
 !QUICK_START_TUNING.md
 !MODEL_OPTIMIZATION_STRATEGY.md
