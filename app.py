@@ -8,6 +8,10 @@ import hashlib
 import secrets
 import csv
 from dotenv import load_dotenv
+
+# Add model_training folder to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'model_training'))
+
 from recommendation_tracker import (
     save_recommendation_set, 
     check_for_model_revalidation,
@@ -34,7 +38,6 @@ app.secret_key = secrets.token_hex(16)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "movies.db")
 CSV_PATH = os.path.join(BASE_DIR, "output.csv")
-sys.path.insert(0, BASE_DIR)
 
 # Initialize model once at startup
 try:

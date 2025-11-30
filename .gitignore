@@ -58,6 +58,14 @@ install-doxygen.bat
 # Markdown files (except README)
 *.md
 !README.md
+!HYPERPARAMETER_TUNER_GUIDE.md
+!QUICK_START_TUNING.md
+!MODEL_OPTIMIZATION_STRATEGY.md
+!PHASE_1_IMPLEMENTATION.md
+!HYPERPARAMETERS.md
+!TUNER_SYSTEM_SUMMARY.md
+!README_TUNER.md
+!TUNER_IMPLEMENTATION_COMPLETE.md
 Raw/*.csv
 
 # Environment variables
@@ -102,6 +110,14 @@ node_modules/
 dist/
 build/
 
-# Markdown files (keep only README.md)
+# Markdown files (keep documentation and README)
 *.md
 !README.md
+!README_TUNER.md
+!HYPERPARAMETER_TUNER_GUIDE.md
+!QUICK_START_TUNING.md
+!MODEL_OPTIMIZATION_STRATEGY.md
+!PHASE_1_IMPLEMENTATION.md
+!HYPERPARAMETERS.md
+!TUNER_SYSTEM_SUMMARY.md
+!IMPLEMENTATION_SUMMARY.md

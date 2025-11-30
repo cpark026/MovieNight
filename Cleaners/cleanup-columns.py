@@ -1,8 +1,8 @@
 import csv
 import ast
 
-input_file = ".movies_combined.csv"
-output_file = "../output.csv"
+input_file = "./Cleaned/movies_combined.csv"
+output_file = "./output.csv"
 
 # Columns to remove
 drop_columns = [
@@ -28,7 +28,57 @@ drop_columns = [
 # Words that will filter out movies if found in title or overview
 BLOCKED_WORDS = [
     "porno",
-    "cuckold"
+    "cuckold",
+    "ass",
+    "asses",
+    "bdsm",
+    "bitch",
+    "bitches",
+    "bitchy",
+    "bj",
+    "boobs",
+    "cock",
+    "cum",
+    "cunt",
+    "dick",
+    "dicks",
+    "fetish",
+    "fuck",
+    "fucked",
+    "fucking",
+    "grope",
+    "groped",
+    "handjob",
+    "hardcore",
+    "incest",
+    "jerk off",
+    "masturbat",
+    "nipple",
+    "nipples",
+    "orgasm",
+    "orgasms",
+    "penetration",
+    "porn",
+    "pornography",
+    "prostitute",
+    "pussy",
+    "rape",
+    "raped",
+    "raping",
+    "sex",
+    "sexual",
+    "sexuality",
+    "sexy",
+    "shit",
+    "shits",
+    "slut",
+    "sluts",
+    "suck",
+    "sucking",
+    "sucks",
+    "whore",
+    "whores",
+    "xxx"
 ]
 
 def contains_blocked_word(text):

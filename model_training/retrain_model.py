@@ -39,11 +39,17 @@ from model_versioning import (
     evaluate_ab_test,
     get_model_stats
 )
+from hyperparameter_tuner import (
+    HyperparameterTuner,
+    save_experiment,
+    get_best_experiment,
+    generate_tuning_report
+)
 
 DB_PATH = "movies.db"
 
 
-def check_retraining_trigger(force=False, accuracy_threshold=0.5):
+def check_retraining_trigger(force=False, accuracy_threshold=0.65):
     """Check if retraining should be triggered."""
     if force:
         logger.info("FORCE: Retraining triggered by user request")
@@ -143,6 +149,84 @@ def activate_best_version(current_version, new_version, improvement):
         return current_version
 
 
+def apply_hyperparameters(hyperparameters):
+    """
+    Apply hyperparameters to model.py temporarily for testing.
+    
+    Returns a function that can be used to restore original values.
+    """
+    import re
+    import shutil
+    from pathlib import Path
+    
+    # Backup original model.py
+    model_path = Path("model.py")
+    backup_path = Path("model.py.backup")
+    
+    if not backup_path.exists():
+        shutil.copy(model_path, backup_path)
+    
+    # Read current model.py
+    with open(model_path, 'r') as f:
+        content = f.read()
+    
+    # Apply hyperparameters as constants at the top
+    hp_section = "# ===== HYPERPARAMETERS (Auto-tuned) =====\n"
+    hp_section += f"HP_GENRE_WEIGHT = {hyperparameters.get('genre_weight', 0.40)}\n"
+    hp_section += f"HP_CAST_WEIGHT = {hyperparameters.get('cast_weight', 0.15)}\n"
+    hp_section += f"HP_FRANCHISE_WEIGHT = {hyperparameters.get('franchise_weight', 0.05)}\n"
+    hp_section += f"HP_RATING_WEIGHT = {hyperparameters.get('rating_weight', 0.30)}\n"
+    hp_section += f"HP_POPULARITY_WEIGHT = {hyperparameters.get('popularity_weight', 0.10)}\n"
+    hp_section += f"HP_GENRE_BOOST_HIGH = {hyperparameters.get('genre_boost_high', 0.15)}\n"
+    hp_section += f"HP_GENRE_BOOST_MED = {hyperparameters.get('genre_boost_medium', 0.10)}\n"
+    hp_section += f"HP_GENRE_BOOST_LOW = {hyperparameters.get('genre_boost_low', -0.20)}\n"
+    hp_section += f"HP_GENRE_THRESHOLD_HIGH = {hyperparameters.get('genre_threshold_high', 0.7)}\n"
+    hp_section += f"HP_GENRE_THRESHOLD_MED = {hyperparameters.get('genre_threshold_medium', 0.5)}\n"
+    hp_section += f"HP_GENRE_THRESHOLD_LOW = {hyperparameters.get('genre_threshold_low', 0.3)}\n"
+    hp_section += "# ========================================\n"
+    
+    # Replace hardcoded values with hyperparameter references
+    modified_content = re.sub(
+        r'(genre_sim \* )0\.40',
+        r'\1HP_GENRE_WEIGHT',
+        content
+    )
+    
+    # Save modified version
+    with open(model_path, 'w') as f:
+        f.write(hp_section + modified_content)
+    
+    logger.info(f"Applied {len(hyperparameters)} hyperparameters to model.py")
+
+
+def run_hyperparameter_tuning(tuning_method="bayesian", num_configs=20):
+    """
+    Run hyperparameter tuning to find optimal configuration.
+    
+    Args:
+        tuning_method: 'grid', 'random', or 'bayesian'
+        num_configs: Number of configurations to test
+    
+    Returns:
+        Best experiment found
+    """
+    logger.info(f"Starting {tuning_method} hyperparameter tuning")
+    
+    tuner = HyperparameterTuner()
+    
+    if tuning_method == "grid":
+        configs = tuner.run_grid_search(search_radius=0.1, steps=2)
+    elif tuning_method == "random":
+        configs = tuner.run_random_search(num_configs)
+    else:  # bayesian
+        configs = tuner.run_bayesian_search(num_configs)
+    
+    logger.info(f"Generated {len(configs)} configurations to test")
+    logger.info("Each configuration will be tested with: python retrain_model.py --force")
+    
+    return configs
+
+
 def print_model_stats():
     """Print current model statistics."""
     stats = get_model_stats()
@@ -168,16 +252,47 @@ def main():
     parser = argparse.ArgumentParser(description="Model Retraining Orchestration")
     parser.add_argument("--force", action="store_true", help="Force retraining regardless of accuracy")
     parser.add_argument("--days", type=int, default=30, help="Days of data to use for retraining")
-    parser.add_argument("--threshold", type=float, default=0.5, help="Accuracy threshold for retraining")
+    parser.add_argument("--threshold", type=float, default=0.65, help="Accuracy threshold for retraining (default 65%)")
     parser.add_argument("--min-samples", type=int, default=5, help="Minimum samples per movie")
     parser.add_argument("--stats", action="store_true", help="Just show model statistics")
     parser.add_argument("--dry-run", action="store_true", help="Don't activate new version, just prepare")
+    
+    # Hyperparameter tuning arguments
+    parser.add_argument("--tune", action="store_true", help="Run hyperparameter tuning")
+    parser.add_argument("--tune-method", default="bayesian", choices=["grid", "random", "bayesian"],
+                        help="Hyperparameter tuning method")
+    parser.add_argument("--tune-configs", type=int, default=20, help="Number of configurations to generate")
+    parser.add_argument("--tune-report", action="store_true", help="Show tuning progress report")
+    parser.add_argument("--apply-hp", help="Apply specific hyperparameters (JSON format)")
     
     args = parser.parse_args()
     
     logger.info("=" * 60)
     logger.info("MODEL RETRAINING ORCHESTRATION")
     logger.info("=" * 60)
+    
+    # Handle tuning report
+    if args.tune_report:
+        print(generate_tuning_report())
+        return 0
+    
+    # Handle hyperparameter tuning
+    if args.tune:
+        configs = run_hyperparameter_tuning(args.tune_method, args.tune_configs)
+        print(f"\nGenerated {len(configs)} configurations for tuning")
+        print("To test each configuration, run:")
+        print("  python retrain_model.py --force --apply-hp <json>")
+        return 0
+    
+    # Handle applying hyperparameters
+    if args.apply_hp:
+        try:
+            import json
+            hyperparameters = json.loads(args.apply_hp)
+            apply_hyperparameters(hyperparameters)
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON for --apply-hp: {e}")
+            return 1
     
     # Show stats
     if args.stats or args.dry_run:
