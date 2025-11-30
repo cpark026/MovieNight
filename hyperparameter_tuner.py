@@ -454,8 +454,9 @@ class HyperparameterTuner:
         """Run Bayesian optimization search."""
         logger.info(f"[TUNING] Starting Bayesian search ({num_configs} configs)")
         
-        # Get previous experiments
+        # Get previous experiments using named columns
         conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row  # Enable column access by name
         cursor = conn.cursor()
         
         cursor.execute("""
@@ -468,13 +469,16 @@ class HyperparameterTuner:
         rows = cursor.fetchall()
         conn.close()
         
-        # Convert to dict format
+        # Convert to dict format with proper type conversion
         previous = []
         for row in rows:
             previous.append({
-                "genre_weight": row[3],
-                "cast_weight": row[4],
-                "improvement_from_baseline": row[22]
+                "genre_weight": float(row["genre_weight"]) if row["genre_weight"] is not None else 0.4,
+                "cast_weight": float(row["cast_weight"]) if row["cast_weight"] is not None else 0.15,
+                "franchise_weight": float(row["franchise_weight"]) if row["franchise_weight"] is not None else 0.05,
+                "rating_weight": float(row["rating_weight"]) if row["rating_weight"] is not None else 0.30,
+                "popularity_weight": float(row["popularity_weight"]) if row["popularity_weight"] is not None else 0.10,
+                "improvement_from_baseline": float(row["improvement_from_baseline"]) if row["improvement_from_baseline"] is not None else 0
             })
         
         configs = generate_bayesian_search_space(self.initial_hp, previous, num_configs)
