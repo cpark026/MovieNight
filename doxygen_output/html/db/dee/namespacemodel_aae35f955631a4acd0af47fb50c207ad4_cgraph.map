@@ -1,0 +1,11 @@
+<map id="model.get_recommendations_by_most_common_genre" name="model.get_recommendations_by_most_common_genre">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,39,194,81"/>
+<area shape="rect" id="Node000002" href="$db/dee/namespacemodel.html#a3f3c6f856f4b587d404194ce557612b9" title=" " alt="" coords="242,39,377,81"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,57,229,60,224,60,194,63"/>
+<area shape="rect" id="Node000003" href="$db/dee/namespacemodel.html#ab76add272889a3e6ca4f5616f36f414a" title=" " alt="" coords="425,47,538,73"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="377,57,412,60,407,60,377,63"/>
+<area shape="rect" id="Node000004" href="$db/dee/namespacemodel.html#a58d81c4b15c700d2acacf1161984d941" title=" " alt="" coords="586,5,722,48"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="538,46,568,43,574,42,539,52"/>
+<area shape="rect" id="Node000005" href="$db/dee/namespacemodel.html#ab4b65039e0d99a2d9cee6e1bb38f5728" title=" " alt="" coords="588,72,720,115"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="539,68,575,78,570,77,538,74"/>
+</map>
