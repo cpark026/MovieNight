@@ -1,0 +1,93 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Large CSV files (too big for GitHub)
+*.csv
+output.csv
+Cleaned/*.csv
+Raw/*.csv
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env*
+
+# Secret keys
+.secret_key
+secret_key
+secrets.py
+*_secret*
+*.key
+*.pem
+
+# Configuration with secrets
+config.env
+config.local.py
+settings.local.py
+
+# Logs
+*.log
+
+# Raw data (keep cleaned data)
+Raw/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Local scripts (not for repo)
+push-to-github.bat
+*.bat
+*.sh
+
+# Node modules (if using any frontend build tools)
+node_modules/
+
+# Build outputs
+dist/
+build/

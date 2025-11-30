@@ -1,0 +1,219 @@
+header input[type="text"] {
+     padding: 8px;
+     font-size: 16px;
+     border: 1px solid #555;
+     border-radius: 4px;
+     background-color: #333;
+     color: white;
+     width: 200px;
+}
+
+#title {
+     color: white;
+     text-align: center;
+     margin-top: 20px;
+     font-size: 25px;
+}
+
+#shows-list {
+     display: grid;
+     grid-template-columns: repeat(5, 1fr);
+     gap: 20px;
+     list-style: none;
+     padding: 0 40px;
+     margin: 20px auto;
+     max-width: 100%;
+     box-sizing: border-box;
+}
+
+.show-item {
+     border: 1px solid #444;
+     border-radius: 8px;
+     background-color: #222;
+     color: white;
+     text-align: center;
+     padding: 8px;
+     font-size: 0.9em;
+     width: 95%;
+     box-sizing: border-box;
+     justify-content: space-between;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+}
+
+.show-item h3 {
+     font-size: 0.95em;
+     margin-top: 5px;
+}
+
+.show-item p {
+     margin: 3px 0;
+     font-size: 0.9em;
+     margin-top: 12px;
+}
+
+.show-image {
+     max-width: 50%;
+     height: auto;
+     border-radius: 6px;
+}
+
+@media (max-width: 428px) {
+     #shows-list {
+          grid-template-columns: repeat(2, 1fr);
+     }
+
+     .show-item {
+          font-size: .8em;
+     }
+
+     #searchInput {
+          width: 120px;
+          height: 30px;
+          font-size: 14px;
+          padding: 5px;
+     }
+}
+
+button[disabled] {
+     background-color: #555;
+     color: #aaa;
+     border: none;
+     cursor: not-allowed;
+}
+
+.show-item a:hover {
+     text-decoration: underline;
+}
+
+.update-container {
+     max-width: 400px;
+     margin: 50px auto;
+     padding: 20px;
+     border: 1px solid #444;
+     border-radius: 8px;
+     background-color: #222;
+     color: white;
+     text-align: center;
+}
+
+.update-container input {
+     width: 100%;
+     padding: 8px;
+     margin: 10px 0;
+     border: 1px solid #555;
+     border-radius: 4px;
+     background-color: #333;
+     color: white;
+}
+
+.update-container button,
+.button-container button {
+     padding: 10px 15px;
+     margin: 5px;
+     background-color: #4caf50;
+     border: none;
+     border-radius: 4px;
+     color: white;
+     cursor: pointer;
+}
+
+.update-container button:hover {
+     background-color: #45a049;
+}
+
+select {
+     width: 100%;
+     padding: 10px;
+     margin: 10px 0;
+     border-radius: 5px;
+     border: 1px solid #555;
+     background-color: #333;
+     color: white;
+     font-size: 14px;
+     cursor: pointer;
+     box-sizing: border-box;
+     text-align: center;
+}
+
+select:disabled {
+     background-color: #555;
+     color: #aaa;
+     cursor: not-allowed;
+}
+
+select:hover:enabled {
+     border-color: #888;
+}
+
+.back-button {
+     background-color: rgb(70, 70, 70);
+}
+
+.back-button:hover {
+     background-color: rgb(85, 85, 85);
+}
+
+/* Rating container matches update-container */
+.rate-container {
+     background-color: #222;
+     color: white;
+     padding: 20px;
+     border-radius: 8px;
+     max-width: 400px;
+     margin: 50px auto;
+     text-align: center;
+     box-sizing: border-box;
+}
+
+/* Title */
+.rate-container h2 {
+     font-size: 1.3em;
+     margin-bottom: 20px;
+     color: #fff;
+}
+
+/* Label */
+.rating-label {
+     font-size: 1em;
+     color: #ddd;
+     display: block;
+     margin-bottom: 10px;
+}
+
+/* Select input styled consistently */
+.rating-select {
+     width: 100%;
+     padding: 10px;
+     margin: 10px 0;
+     border-radius: 5px;
+     border: 1px solid #555;
+     background-color: #333;
+     color: white;
+     font-size: 14px;
+     cursor: pointer;
+     box-sizing: border-box;
+     text-align: center;
+}
+
+/* Disabled state */
+.rating-select:disabled {
+     background-color: #555;
+     color: #aaa;
+     cursor: not-allowed;
+}
+
+/* Hover for enabled select */
+.rating-select:hover:enabled {
+     border-color: #888;
+}
+
+/* Button container for side-by-side layout */
+.button-container {
+     display: flex;
+     justify-content: center;
+     gap: 10px;
+     flex-wrap: wrap;
+     margin-top: 15px;
+}
