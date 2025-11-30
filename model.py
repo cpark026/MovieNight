@@ -24,6 +24,7 @@ Key Features:
 # Global Spark session and cached dataframe
 spark = None
 df_all = None
+_data_loaded = False
 
 # Database and CSV paths
 DB_PATH = "movies.db"
@@ -232,24 +233,35 @@ def create_spark_and_load_data():
     - Uses all available CPU cores
     - Minimizes shuffle partitions for faster processing
     - Configures driver for stable operation
+    - Only loads data once (uses global flag to prevent re-reading)
     
     Global:
         spark: Initialized SparkSession instance
+        df_all: Cached DataFrame with preprocessed movie data
+        _data_loaded: Flag to prevent re-loading data
     """
-    global spark
+    global spark, df_all, _data_loaded
+    
+    # Skip if data is already loaded and cached
+    if _data_loaded and df_all is not None:
+        return
+    
     # Create Spark session with local cluster using all available cores
-    spark = SparkSession.builder \
-        .master("local[*]") \
-        .appName("MovieRecommenderModel") \
-        .config("spark.driver.host", "127.0.0.1") \
-        .config("spark.driver.bindAddress", "127.0.0.1") \
-        .config("spark.sql.shuffle.partitions", "4") \
-        .config("spark.python.worker.faulthandler.enabled", "true") \
-        .getOrCreate()
-    # Suppress INFO/WARN logs
-    spark.sparkContext.setLogLevel("ERROR")
+    if spark is None:
+        spark = SparkSession.builder \
+            .master("local[*]") \
+            .appName("MovieRecommenderModel") \
+            .config("spark.driver.host", "127.0.0.1") \
+            .config("spark.driver.bindAddress", "127.0.0.1") \
+            .config("spark.sql.shuffle.partitions", "4") \
+            .config("spark.python.worker.faulthandler.enabled", "true") \
+            .getOrCreate()
+        # Suppress INFO/WARN logs
+        spark.sparkContext.setLogLevel("ERROR")
+    
     # Load and cache the movie data
     read_csv()
+    _data_loaded = True
 
 
 def get_top_recommendations(user_id, top_n=10):
@@ -281,9 +293,9 @@ def get_top_recommendations(user_id, top_n=10):
             - cast_overlap: List of cast members in both user profile and movie
     """
     _timer_start = time.time()
-    global spark, df_all
-    # Initialize Spark if not already done
-    if df_all is None:
+    global spark, df_all, _data_loaded
+    # Initialize Spark and load data once if not already done (uses cache)
+    if not _data_loaded or df_all is None:
         create_spark_and_load_data()
 
     # Fetch user's rated movies from database
@@ -431,9 +443,9 @@ def get_recommendations_for_last_added(user_id, top_n=10):
             - cast_overlap: List of shared cast members
     """
     _timer_start = time.time()
-    global spark, df_all
-    # Initialize Spark if not already done
-    if df_all is None:
+    global spark, df_all, _data_loaded
+    # Initialize Spark and load data once if not already done (uses cache)
+    if not _data_loaded or df_all is None:
         create_spark_and_load_data()
 
     # Fetch user's last added movie
@@ -546,9 +558,9 @@ def get_recommendations_by_most_common_genre(user_id, top_n=10):
             - score: Combined score [0.0, 1.0]
     """
     _timer_start = time.time()
-    global spark, df_all
-    # Initialize Spark if not already done
-    if df_all is None:
+    global spark, df_all, _data_loaded
+    # Initialize Spark and load data once if not already done (uses cache)
+    if not _data_loaded or df_all is None:
         create_spark_and_load_data()
 
     # Fetch user's genres from database
