@@ -48,6 +48,7 @@ def register_feedback_routes(app):
                 apply_dislike_to_training_data,
                 calculate_feature_adjustment_from_dislike
             )
+            from flask import session
             
             data = request.get_json()
             
@@ -55,13 +56,13 @@ def register_feedback_routes(app):
             if not data.get('movie_title'):
                 return jsonify({'error': 'movie_title is required'}), 400
             
-            # Get user from session
-            if 'user_id' not in app.globals.get('session', {}):
-                user_id = request.headers.get('X-User-ID', type=int)
-                if not user_id:
-                    return jsonify({'error': 'Not authenticated'}), 401
-            else:
-                user_id = app.globals['session']['user_id']
+            # Get user ID from header or session
+            user_id = request.headers.get('X-User-ID', type=int)
+            if not user_id and 'user_id' in session:
+                user_id = session.get('user_id')
+            
+            if not user_id:
+                return jsonify({'error': 'Not authenticated'}), 401
             
             # Save the dislike
             dislike_id = save_dislike(
@@ -127,11 +128,12 @@ def register_feedback_routes(app):
         """
         try:
             from .feedback_handler import get_user_dislikes
+            from flask import session
             
-            # Get user ID from session or header
-            user_id = None
-            if 'user_id' in request.headers:
-                user_id = int(request.headers.get('X-User-ID', type=int))
+            # Get user ID from header or session
+            user_id = request.headers.get('X-User-ID', type=int)
+            if not user_id and 'user_id' in session:
+                user_id = session.get('user_id')
             
             if not user_id:
                 return jsonify({'error': 'Not authenticated'}), 401
@@ -160,11 +162,12 @@ def register_feedback_routes(app):
         """
         try:
             from .feedback_handler import get_dislike_pattern_analysis
+            from flask import session
             
-            # Get user ID from session or header
-            user_id = None
-            if 'user_id' in request.headers:
-                user_id = int(request.headers.get('X-User-ID', type=int))
+            # Get user ID from header or session
+            user_id = request.headers.get('X-User-ID', type=int)
+            if not user_id and 'user_id' in session:
+                user_id = session.get('user_id')
             
             if not user_id:
                 return jsonify({'error': 'Not authenticated'}), 401

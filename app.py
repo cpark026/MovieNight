@@ -12,6 +12,9 @@ from dotenv import load_dotenv
 # Add model_training folder to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'model_training'))
 
+# Add feedback_system folder to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'feedback_system'))
+
 from recommendation_tracker import (
     save_recommendation_set, 
     check_for_model_revalidation,
@@ -46,6 +49,16 @@ try:
 except Exception as e:
     print(f"Warning: Could not initialize model: {e}")
     MODEL_READY = False
+
+# Initialize feedback system
+try:
+    from feedback_system import init_feedback_tables, register_feedback_routes
+    init_feedback_tables()
+    register_feedback_routes(app)
+    FEEDBACK_READY = True
+except Exception as e:
+    print(f"Warning: Could not initialize feedback system: {e}")
+    FEEDBACK_READY = False
 
 # ========================
 # TMDb Bearer token (from environment)

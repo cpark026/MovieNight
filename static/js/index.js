@@ -259,10 +259,86 @@ cancelBtn.addEventListener("click", () => {
     }
 });
 
-        confirmBtn.addEventListener("click", () => {
-        card.innerHTML = "";
-        // Here you can later add logic to actually dislike the movie
-    });
+        confirmBtn.addEventListener("click", async () => {
+            try {
+                // Get user ID from session
+                const userRes = await fetch("/api/check-auth", {
+                    credentials: 'include'
+                });
+                const userData = await userRes.json();
+                
+                if (!userData.authenticated) {
+                    console.error("User not authenticated");
+                    return;
+                }
+
+                const userId = userData.user_id;
+
+                // Send dislike to backend
+                const response = await fetch('/api/dislike', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-User-ID': userId
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        movie_id: movie.id || null,
+                        movie_title: movie.title,
+                        recommendation_set_id: movie.recommendation_set_id || null,
+                        predicted_score: movie.scores?.hybrid_score || movie.hybrid_score || 0.0,
+                        reason: "not_interested",
+                        feedback_text: "",
+                        genres: Array.isArray(movie.genres) ? movie.genres : (movie.genres ? movie.genres.split("|") : []),
+                        cast: movie.cast || []
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    console.log('[FEEDBACK] Dislike recorded:', data.dislike_id);
+                    
+                    // Show confirmation message
+                    card.innerHTML = "";
+                    const confirmation = document.createElement("div");
+                    confirmation.textContent = "✓ Dislike recorded. We'll improve recommendations!";
+                    confirmation.style.color = "#28a745";
+                    confirmation.style.textAlign = "center";
+                    confirmation.style.padding = "15px";
+                    confirmation.style.fontSize = "14px";
+                    confirmation.style.fontWeight = "bold";
+                    card.appendChild(confirmation);
+                    
+                    // Fade out card after 2 seconds
+                    setTimeout(() => {
+                        card.style.opacity = "0";
+                        card.style.transition = "opacity 0.5s ease-out";
+                        setTimeout(() => {
+                            card.style.display = "none";
+                        }, 500);
+                    }, 2000);
+                } else {
+                    console.error('[FEEDBACK] Error recording dislike:', data.error);
+                    card.innerHTML = "";
+                    const errorDiv = document.createElement("div");
+                    errorDiv.textContent = "Error recording dislike. Please try again.";
+                    errorDiv.style.color = "#dc3545";
+                    errorDiv.style.textAlign = "center";
+                    errorDiv.style.padding = "15px";
+                    card.appendChild(errorDiv);
+                }
+            } catch (err) {
+                console.error('[FEEDBACK] Network error:', err);
+                card.innerHTML = "";
+                const errorDiv = document.createElement("div");
+                errorDiv.textContent = "Network error. Please try again.";
+                errorDiv.style.color = "#dc3545";
+                errorDiv.style.textAlign = "center";
+                errorDiv.style.padding = "15px";
+                card.appendChild(errorDiv);
+            }
+        });
 });
 
 
