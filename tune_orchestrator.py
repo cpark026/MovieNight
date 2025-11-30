@@ -146,7 +146,7 @@ class TuningOrchestrator:
             if i % 5 == 0:
                 logger.info(f"\nTuning Progress: {i}/{len(configs)} configurations tested")
                 best = get_best_experiment()
-                if best:
+                if best and best['test_accuracy'] is not None:
                     logger.info(f"Best so far: {best['experiment_id']} with {best['test_accuracy']:.2%} accuracy\n")
         
         return results
@@ -184,7 +184,7 @@ class TuningOrchestrator:
         stats = get_tuning_statistics()
         best = get_best_experiment()
         
-        if best:
+        if best and best.get('test_accuracy') is not None:
             best_config_section = f"""Best Configuration:
   Experiment ID: {best['experiment_id']}
   Accuracy: {best['test_accuracy']:.2%}

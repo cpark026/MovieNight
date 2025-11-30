@@ -348,6 +348,7 @@ def save_experiment(experiment_id, hyperparameters, accuracy, improvement, metho
 def get_best_experiment():
     """Get the best performing hyperparameter configuration found so far."""
     conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     
     cursor.execute("""
@@ -362,9 +363,9 @@ def get_best_experiment():
     
     if result:
         return {
-            "experiment_id": result[1],
-            "test_accuracy": result[21],
-            "improvement": result[22]
+            "experiment_id": result["experiment_id"],
+            "test_accuracy": result["test_accuracy"],
+            "improvement": result["improvement_from_baseline"]
         }
     
     return None
