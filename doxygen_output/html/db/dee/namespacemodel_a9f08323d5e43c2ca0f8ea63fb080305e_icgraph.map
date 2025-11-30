@@ -1,7 +1,0 @@
-<map id="model.franchise_similarity" name="model.franchise_similarity">
-<area shape="rect" id="Node000001" title=" " alt="" coords="267,43,439,69"/>
-<area shape="rect" id="Node000002" href="$db/dee/namespacemodel.html#aafd8a20591eda7adca62fcfcd4c4ccfd" title=" " alt="" coords="18,5,206,48"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="248,44,207,41,206,35,254,43"/>
-<area shape="rect" id="Node000003" href="$db/dee/namespacemodel.html#a7d2eb0317cb13b0ac39ce798dd1cd706" title=" " alt="" coords="5,72,219,99"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="248,69,220,75,219,70,254,68"/>
-</map>
