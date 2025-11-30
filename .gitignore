@@ -48,6 +48,16 @@ Thumbs.db
 *.csv
 output.csv
 Cleaned/*.csv
+
+# Doxygen
+doxygen_output/
+Doxyfile
+generate_docs.py
+install-doxygen.bat
+
+# Markdown files (except README)
+*.md
+!README.md
 Raw/*.csv
 
 # Environment variables
@@ -91,3 +101,7 @@ node_modules/
 # Build outputs
 dist/
 build/
+
+# Markdown files (keep only README.md)
+*.md
+!README.md
