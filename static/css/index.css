@@ -110,7 +110,7 @@ button:hover {
 
 /* Phones — show 1 column */
 @media (max-width: 500px) {
-    .recommendications-grid {
+    .recommendations-grid {
         grid-template-columns: repeat(1, 1fr);
     }
 }
