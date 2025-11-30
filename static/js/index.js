@@ -83,7 +83,7 @@ async function fetchAllRecommendations() {
             fetch("/getMostCommonGenreRecommendations", { credentials: 'include' }).then(r => r.ok ? r.json() : null),
             fetch("/getMostCommonGenre", { credentials: 'include' }).then(r => r.ok ? r.json() : null)
         ]);
-        
+
         const fetchEndTime = performance.now();
         const fetchDuration = ((fetchEndTime - fetchStartTime) / 1000).toFixed(2);
         console.log(`[TIMER] All API calls completed in ${fetchDuration}s`);
@@ -140,10 +140,134 @@ function displayRecommendationsSection(recommendations, containerId) {
         const card = document.createElement("div");
         card.className = "recommendation-card";
 
+        // Wrapper for title + thumbs down
+        const titleWrapper = document.createElement("div");
+        titleWrapper.style.display = "flex";
+        titleWrapper.style.alignItems = "center";
+        titleWrapper.style.justifyContent = "center";
+        titleWrapper.style.width = "100%";
+
+        // Movie title
         const title = document.createElement("h3");
         title.textContent = `#${idx + 1} ${movie.title || "Untitled"}`;
-        card.appendChild(title);
+        title.style.margin = 0; 
+        titleWrapper.appendChild(title);
 
+        // Thumbs-down icon
+        const thumbsDown = document.createElement("span");
+        thumbsDown.textContent = "👎"; 
+        thumbsDown.style.cursor = "pointer";
+        thumbsDown.title = "Dislike";
+        thumbsDown.style.marginTop = "4px";
+        thumbsDown.style.marginLeft = "5px";
+        titleWrapper.appendChild(thumbsDown);
+        thumbsDown.addEventListener("click", () => {
+    // Hide original card content
+    card.innerHTML = "";
+
+    // Create confirmation card
+    const confirmCard = document.createElement("div");
+    confirmCard.className = "confirmation-card";
+    confirmCard.style.border = "1px solid #ccc";
+    confirmCard.style.padding = "10px";
+    confirmCard.style.borderRadius = "6px";
+    confirmCard.style.textAlign = "center";
+    confirmCard.style.backgroundColor = "#f9f9f9";
+
+    const message = document.createElement("p");
+    message.textContent = "Are you sure you want to dislike this movie?";
+    confirmCard.appendChild(message);
+
+    const buttonsWrapper = document.createElement("div");
+    buttonsWrapper.style.marginTop = "10px";
+    buttonsWrapper.style.display = "flex";
+    buttonsWrapper.style.justifyContent = "center";
+    buttonsWrapper.style.gap = "10px";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.style.padding = "5px 10px";
+    cancelBtn.style.cursor = "pointer";
+
+    const confirmBtn = document.createElement("button");
+    confirmBtn.textContent = "Confirm";
+    confirmBtn.style.padding = "5px 10px";
+    confirmBtn.style.cursor = "pointer";
+
+    buttonsWrapper.appendChild(cancelBtn);
+    buttonsWrapper.appendChild(confirmBtn);
+    confirmCard.appendChild(buttonsWrapper);
+
+    card.appendChild(confirmCard);
+
+    // Cancel restores original card
+cancelBtn.addEventListener("click", () => {
+    card.innerHTML = "";
+    card.appendChild(titleWrapper);
+
+    // GENRES
+    if (movie.genres) {
+        const genres = document.createElement("p");
+        genres.className = "genres";
+        genres.textContent = Array.isArray(movie.genres)
+            ? `Genres: ${movie.genres.join(", ")}`
+            : `Genres: ${String(movie.genres).replace(/\|/g, ", ")}`;
+        card.appendChild(genres);
+    }
+
+    // OVERVIEW
+    if (movie.overview) {
+        const overview = document.createElement("p");
+        overview.className = "overview";
+        overview.textContent = movie.overview;
+        card.appendChild(overview);
+    }
+
+    // SCORES
+    const genreSim = movie.scores?.genre_sim ?? movie.genre_sim ?? 0;
+    const castSim = movie.scores?.cast_sim ?? movie.cast_sim ?? 0;
+    const franchiseSim = movie.scores?.franchise_sim ?? movie.franchise_sim ?? 0;
+    const hybridScore = movie.scores?.hybrid_score ?? movie.hybrid_score ?? 0;
+
+    if (genreSim || castSim || franchiseSim || hybridScore) {
+        const scores = document.createElement("div");
+        scores.className = "scores";
+        scores.innerHTML = `
+            <p><strong>Scores:</strong></p>
+            <p>Genre Match: ${(Number(genreSim) * 100).toFixed(1)}%</p>
+            <p>Cast Match: ${(Number(castSim) * 100).toFixed(1)}%</p>
+            <p>Franchise Match: ${(Number(franchiseSim) * 100).toFixed(1)}%</p>
+            <p><strong>Overall Score: ${(Number(hybridScore) * 100).toFixed(1)}%</strong></p>
+        `;
+        card.appendChild(scores);
+    }
+
+    // CAST OVERLAP
+    if (movie.cast_overlap?.length) {
+        const overlap = document.createElement("p");
+        overlap.className = "cast-overlap";
+        overlap.textContent = `Cast Overlap: ${movie.cast_overlap.join(", ")}`;
+        card.appendChild(overlap);
+    }
+
+    // REFERENCE MOVIE
+    if (movie.reference_movie) {
+        const ref = document.createElement("p");
+        ref.className = "reference";
+        ref.textContent = `Based on: ${movie.reference_movie}`;
+        card.appendChild(ref);
+    }
+});
+
+        confirmBtn.addEventListener("click", () => {
+        card.innerHTML = "";
+        // Here you can later add logic to actually dislike the movie
+    });
+});
+
+
+        // Append wrapper to card
+        card.appendChild(titleWrapper);
         if (movie.genres) {
             const genres = document.createElement("p");
             genres.className = "genres";
