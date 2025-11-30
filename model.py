@@ -1,8 +1,9 @@
 import sqlite3
 import re
 import time
+import math
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, regexp_replace, lit, udf, split, array_intersect, size, when
+from pyspark.sql.functions import col, regexp_replace, lit, udf, split, array_intersect, size, when, log10
 from pyspark.sql.types import FloatType, StringType, ArrayType
 
 """
@@ -363,18 +364,40 @@ def get_top_recommendations(user_id, top_n=10):
             return 0.0
         return float(len(user_set & movie_set)) / float(len(user_set | movie_set))
 
-    # UDF: Calculate cast overlap ratio with user profile
+    # UDF: Calculate weighted cast overlap with position-based weighting
     @udf(FloatType())
     def cast_sim_udf(cast_array):
-        """Calculate cast overlap ratio with user profile."""
+        """
+        Calculate cast overlap ratio with position-based weighting.
+        Lead cast (0-5): weight 1.0
+        Supporting (5-15): weight 0.7
+        Background (15+): weight 0.3
+        """
         if not cast_array or not bc_cast.value:
             return 0.0
-        user_set = set([c.strip() for c in bc_cast.value.split("|") if c.strip()])
-        movie_set = set([c.strip() for c in cast_array if c.strip()])
-        if not user_set or not movie_set:
+        
+        # Parse user cast with position weights
+        user_cast_list = [c.strip() for c in bc_cast.value.split("|") if c.strip()]
+        user_cast_weighted = {}
+        for i, c in enumerate(user_cast_list):
+            weight = 1.0 if i < 5 else (0.7 if i < 15 else 0.3)
+            user_cast_weighted[c] = weight
+        
+        # Parse movie cast with position weights
+        movie_cast_list = [c.strip() for c in cast_array if isinstance(c, str) and c.strip()]
+        movie_cast_weighted = {}
+        for i, c in enumerate(movie_cast_list):
+            weight = 1.0 if i < 5 else (0.7 if i < 15 else 0.3)
+            movie_cast_weighted[c] = weight
+        
+        # Calculate weighted overlap
+        if not user_cast_weighted or not movie_cast_weighted:
             return 0.0
-        intersection = user_set & movie_set
-        return float(len(intersection)) / float(len(movie_set))
+        
+        overlap_weight = sum(user_cast_weighted.get(c, 0) for c in movie_cast_weighted)
+        max_weight = sum(movie_cast_weighted.values())
+        
+        return min(1.0, overlap_weight / max_weight) if max_weight > 0 else 0.0
 
     # UDF: Check if movie is in same franchise as any user movie
     @udf(FloatType())
@@ -391,11 +414,21 @@ def get_top_recommendations(user_id, top_n=10):
         .withColumn("franchise_sim", franchise_sim_udf(col("title"))) \
         .withColumn("user_rating_norm", lit(bc_avg_rating.value)) \
         .withColumn("cast_overlap_array", array_intersect(col("cast_names_array"), when(size(col("cast_names_array")) > 0, col("cast_names_array")))) \
+        .withColumn("rating_popularity", col("avg_rating") / 10.0) \
+        .withColumn("count_popularity", when(col("rating_count") > 0, (log10(col("rating_count") + 1) / 3.0)).otherwise(0.0)) \
+        .withColumn("popularity_score", 0.7 * col("rating_popularity") + 0.3 * col("count_popularity")) \
+        .withColumn("genre_boost",
+                   when(col("genre_sim") > 0.7, 0.15)
+                   .when(col("genre_sim") > 0.5, 0.10)
+                   .when(col("genre_sim") < 0.3, -0.20)
+                   .otherwise(0.0)) \
         .withColumn("hybrid_score",
-                    0.45 * col("genre_sim") +
+                    0.40 * col("genre_sim") +
                     0.15 * col("cast_sim") +
                     0.05 * col("franchise_sim") +
-                    0.35 * col("user_rating_norm")) \
+                    0.30 * col("user_rating_norm") +
+                    0.10 * col("popularity_score") +
+                    col("genre_boost")) \
         .orderBy(col("hybrid_score").desc())
 
     # Collect top N results from Spark cluster
