@@ -1,0 +1,460 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="db/dee/namespacemodel" kind="namespace" language="Python">
+    <compoundname>model</compoundname>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="db/dee/namespacemodel_1a4d3229156a79a2b98909288b2618af53" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>model.spark</definition>
+        <argsstring></argsstring>
+        <name>spark</name>
+        <qualifiedname>model.spark</qualifiedname>
+        <initializer>=  None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="25" column="1" bodyfile="model.py" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="db/dee/namespacemodel_1ad6fddc01169ecfdef2d66e7bb63aa9e5" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>model.df_all</definition>
+        <argsstring></argsstring>
+        <name>df_all</name>
+        <qualifiedname>model.df_all</qualifiedname>
+        <initializer>=  None</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="26" column="1" bodyfile="model.py" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="db/dee/namespacemodel_1a04d912346520057b2564510702a46015" prot="public" static="no" mutable="no">
+        <type>str</type>
+        <definition>str model.DB_PATH</definition>
+        <argsstring></argsstring>
+        <name>DB_PATH</name>
+        <qualifiedname>model.DB_PATH</qualifiedname>
+        <initializer>=  &quot;movies.db&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="29" column="1" bodyfile="model.py" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="db/dee/namespacemodel_1a1c017694ec62a493d7849e0b02784e3a" prot="public" static="no" mutable="no">
+        <type>str</type>
+        <definition>str model.CSV_PATH</definition>
+        <argsstring></argsstring>
+        <name>CSV_PATH</name>
+        <qualifiedname>model.CSV_PATH</qualifiedname>
+        <initializer>=  &quot;output.csv&quot;</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="30" column="1" bodyfile="model.py" bodystart="30" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="db/dee/namespacemodel_1ab4b65039e0d99a2d9cee6e1bb38f5728" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.extract_cast_names</definition>
+        <argsstring>(cc_str)</argsstring>
+        <name>extract_cast_names</name>
+        <qualifiedname>model.extract_cast_names</qualifiedname>
+        <param>
+          <type>cc_str</type>
+          <defname>cc_str</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Extract cast members from pipe-separated cast string.
+
+Parses cast_and_crew format: &quot;FirstName|LastName,FirstName|LastName,...&quot;
+Returns a set of lowercase &quot;firstname lastname&quot; pairs for easy comparison.
+
+Args:
+    cc_str (str): Cast string in format &quot;First|Last,First|Last,...&quot;
+    
+Returns:
+    set: Set of lowercased &quot;firstname lastname&quot; pairs
+    
+Example:
+    &gt;&gt;&gt; extract_cast_names(&quot;Tom|Hanks,Tim|Allen&quot;)
+    {&apos;tom hanks&apos;, &apos;tim allen&apos;}
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="33" column="1" bodyfile="model.py" bodystart="33" bodyend="63"/>
+        <referencedby refid="db/dee/namespacemodel_1aafd8a20591eda7adca62fcfcd4c4ccfd" compoundref="d4/d0e/model_8py" startline="406" endline="523">get_recommendations_for_last_added</referencedby>
+        <referencedby refid="db/dee/namespacemodel_1a7d2eb0317cb13b0ac39ce798dd1cd706" compoundref="d4/d0e/model_8py" startline="255" endline="405">get_top_recommendations</referencedby>
+        <referencedby refid="db/dee/namespacemodel_1ab76add272889a3e6ca4f5616f36f414a" compoundref="d4/d0e/model_8py" startline="165" endline="226">read_csv</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="db/dee/namespacemodel_1a58d81c4b15c700d2acacf1161984d941" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.extract_base_title</definition>
+        <argsstring>(title)</argsstring>
+        <name>extract_base_title</name>
+        <qualifiedname>model.extract_base_title</qualifiedname>
+        <param>
+          <type>title</type>
+          <defname>title</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Extract base franchise name from movie title.
+
+Removes franchise indicators like &quot;Part 2&quot;, &quot;Returns&quot;, &quot;Sequel&quot;, etc.
+to identify movies from the same franchise.
+
+Args:
+    title (str): Movie title string
+    
+Returns:
+    str: Lowercased base title without franchise indicators
+    
+Example:
+    &gt;&gt;&gt; extract_base_title(&quot;Toy Story 2: The Sequel&quot;)
+    &apos;toy story&apos;
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="64" column="1" bodyfile="model.py" bodystart="64" bodyend="93"/>
+        <referencedby refid="db/dee/namespacemodel_1a9f08323d5e43c2ca0f8ea63fb080305e" compoundref="d4/d0e/model_8py" startline="117" endline="138">franchise_similarity</referencedby>
+        <referencedby refid="db/dee/namespacemodel_1ab76add272889a3e6ca4f5616f36f414a" compoundref="d4/d0e/model_8py" startline="165" endline="226">read_csv</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="db/dee/namespacemodel_1a2a2a4bbfdd58539ca022dc1af57a9541" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.genre_similarity</definition>
+        <argsstring>(user_genres, movie_genres)</argsstring>
+        <name>genre_similarity</name>
+        <qualifiedname>model.genre_similarity</qualifiedname>
+        <param>
+          <type>user_genres</type>
+          <defname>user_genres</defname>
+        </param>
+        <param>
+          <type>movie_genres</type>
+          <defname>movie_genres</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Calculate Jaccard similarity between user&apos;s genres and movie&apos;s genres.
+
+Jaccard similarity = |intersection| / |union|
+Ranges from 0.0 (no overlap) to 1.0 (identical genres)
+
+Args:
+    user_genres (str): Pipe-separated genre string from user profile
+    movie_genres (str): Pipe-separated genre string from candidate movie
+    
+Returns:
+    float: Jaccard similarity score [0.0, 1.0]
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="94" column="1" bodyfile="model.py" bodystart="94" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="db/dee/namespacemodel_1a9f08323d5e43c2ca0f8ea63fb080305e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.franchise_similarity</definition>
+        <argsstring>(user_title, movie_title)</argsstring>
+        <name>franchise_similarity</name>
+        <qualifiedname>model.franchise_similarity</qualifiedname>
+        <param>
+          <type>user_title</type>
+          <defname>user_title</defname>
+        </param>
+        <param>
+          <type>movie_title</type>
+          <defname>movie_title</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Check if two movies belong to the same franchise.
+
+Uses extract_base_title to compare base franchise names.
+
+Args:
+    user_title (str): Title of user&apos;s rated movie
+    movie_title (str): Title of candidate movie
+    
+Returns:
+    float: 1.0 if same franchise, 0.0 otherwise
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="117" column="1" bodyfile="model.py" bodystart="117" bodyend="138"/>
+        <references refid="db/dee/namespacemodel_1a58d81c4b15c700d2acacf1161984d941" compoundref="d4/d0e/model_8py" startline="64" endline="93">extract_base_title</references>
+        <referencedby refid="db/dee/namespacemodel_1aafd8a20591eda7adca62fcfcd4c4ccfd" compoundref="d4/d0e/model_8py" startline="406" endline="523">get_recommendations_for_last_added</referencedby>
+        <referencedby refid="db/dee/namespacemodel_1a7d2eb0317cb13b0ac39ce798dd1cd706" compoundref="d4/d0e/model_8py" startline="255" endline="405">get_top_recommendations</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="db/dee/namespacemodel_1a03a20157c723094493853c390e8c60d1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.cast_similarity</definition>
+        <argsstring>(user_names_str, movie_names_str)</argsstring>
+        <name>cast_similarity</name>
+        <qualifiedname>model.cast_similarity</qualifiedname>
+        <param>
+          <type>user_names_str</type>
+          <defname>user_names_str</defname>
+        </param>
+        <param>
+          <type>movie_names_str</type>
+          <defname>movie_names_str</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Calculate cast overlap as a ratio of common actors.
+
+Compares pre-extracted cast names. Returns ratio of overlapping actors
+to total actors in the candidate movie.
+
+Args:
+    user_names_str (str): Pipe-separated cast names from user&apos;s movies
+    movie_names_str (str): Pipe-separated cast names from candidate movie
+    
+Returns:
+    float: Ratio [0.0, 1.0] of movie actors present in user&apos;s cast
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="139" column="1" bodyfile="model.py" bodystart="139" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="db/dee/namespacemodel_1ab76add272889a3e6ca4f5616f36f414a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.read_csv</definition>
+        <argsstring>()</argsstring>
+        <name>read_csv</name>
+        <qualifiedname>model.read_csv</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Load and preprocess CSV data into Spark DataFrame.
+
+Performs the following operations:
+1. Reads CSV with proper escape/quote handling for complex fields
+2. Extracts cast names from cast_and_crew field
+3. Pre-computes base titles for franchise matching
+4. Splits genres and cast into arrays for efficient Spark operations
+5. Cleans and casts numeric columns
+6. Caches result for reuse
+
+Returns:
+    DataFrame: Cached Spark DataFrame with preprocessed movie data
+    
+Global:
+    df_all: Set to the loaded and cached DataFrame
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="165" column="1" bodyfile="model.py" bodystart="165" bodyend="226"/>
+        <references refid="db/dee/namespacemodel_1a58d81c4b15c700d2acacf1161984d941" compoundref="d4/d0e/model_8py" startline="64" endline="93">extract_base_title</references>
+        <references refid="db/dee/namespacemodel_1ab4b65039e0d99a2d9cee6e1bb38f5728" compoundref="d4/d0e/model_8py" startline="33" endline="63">extract_cast_names</references>
+        <referencedby refid="db/dee/namespacemodel_1a3f3c6f856f4b587d404194ce557612b9" compoundref="d4/d0e/model_8py" startline="227" endline="254">create_spark_and_load_data</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="db/dee/namespacemodel_1a3f3c6f856f4b587d404194ce557612b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.create_spark_and_load_data</definition>
+        <argsstring>()</argsstring>
+        <name>create_spark_and_load_data</name>
+        <qualifiedname>model.create_spark_and_load_data</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Initialize Spark session and load/preprocess CSV data.
+
+Creates local Spark session with optimized settings for movie recommendations:
+- Uses all available CPU cores
+- Minimizes shuffle partitions for faster processing
+- Configures driver for stable operation
+
+Global:
+    spark: Initialized SparkSession instance
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="227" column="1" bodyfile="model.py" bodystart="227" bodyend="254"/>
+        <references refid="db/dee/namespacemodel_1ab76add272889a3e6ca4f5616f36f414a" compoundref="d4/d0e/model_8py" startline="165" endline="226">read_csv</references>
+        <referencedby refid="db/dee/namespacemodel_1aae35f955631a4acd0af47fb50c207ad4" compoundref="d4/d0e/model_8py" startline="524" endline="592">get_recommendations_by_most_common_genre</referencedby>
+        <referencedby refid="db/dee/namespacemodel_1aafd8a20591eda7adca62fcfcd4c4ccfd" compoundref="d4/d0e/model_8py" startline="406" endline="523">get_recommendations_for_last_added</referencedby>
+        <referencedby refid="db/dee/namespacemodel_1a7d2eb0317cb13b0ac39ce798dd1cd706" compoundref="d4/d0e/model_8py" startline="255" endline="405">get_top_recommendations</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="db/dee/namespacemodel_1a7d2eb0317cb13b0ac39ce798dd1cd706" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.get_top_recommendations</definition>
+        <argsstring>(user_id, top_n=10)</argsstring>
+        <name>get_top_recommendations</name>
+        <qualifiedname>model.get_top_recommendations</qualifiedname>
+        <param>
+          <type>user_id</type>
+          <defname>user_id</defname>
+        </param>
+        <param>
+          <type>top_n</type>
+          <defname>top_n</defname>
+          <defval>10</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Generate personalized recommendations for a user.
+
+Algorithm:
+1. Loads user&apos;s rated movies from SQLite
+2. Builds weighted user profile combining genres, cast, and ratings
+3. Filters out user&apos;s already-rated movies
+4. Calculates similarity scores for remaining movies:
+   - Genre similarity (45% weight)
+   - Cast similarity (15% weight)
+   - Franchise similarity (5% weight)
+   - User&apos;s average rating norm (35% weight)
+5. Returns top N movies by hybrid score
+
+Args:
+    user_id (int): Database user ID
+    top_n (int): Number of recommendations to return (default 10)
+    
+Returns:
+    list: List of dicts with keys:
+        - title: Movie title
+        - cast_names: Pipe-separated cast string
+        - genre_sim, cast_sim, franchise_sim: Individual similarity scores
+        - user_rating_norm: User&apos;s average rating
+        - hybrid_score: Combined score [0.0, 1.0]
+        - cast_overlap: List of cast members in both user profile and movie
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="255" column="1" bodyfile="model.py" bodystart="255" bodyend="405"/>
+        <references refid="db/dee/namespacemodel_1a3f3c6f856f4b587d404194ce557612b9" compoundref="d4/d0e/model_8py" startline="227" endline="254">create_spark_and_load_data</references>
+        <references refid="db/dee/namespacemodel_1ab4b65039e0d99a2d9cee6e1bb38f5728" compoundref="d4/d0e/model_8py" startline="33" endline="63">extract_cast_names</references>
+        <references refid="db/dee/namespacemodel_1a9f08323d5e43c2ca0f8ea63fb080305e" compoundref="d4/d0e/model_8py" startline="117" endline="138">franchise_similarity</references>
+      </memberdef>
+      <memberdef kind="function" id="db/dee/namespacemodel_1aafd8a20591eda7adca62fcfcd4c4ccfd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.get_recommendations_for_last_added</definition>
+        <argsstring>(user_id, top_n=10)</argsstring>
+        <name>get_recommendations_for_last_added</name>
+        <qualifiedname>model.get_recommendations_for_last_added</qualifiedname>
+        <param>
+          <type>user_id</type>
+          <defname>user_id</defname>
+        </param>
+        <param>
+          <type>top_n</type>
+          <defname>top_n</defname>
+          <defval>10</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Generate recommendations based on user&apos;s most recently added movie.
+
+Algorithm:
+1. Retrieves user&apos;s last added movie from SQLite
+2. Finds similar movies by comparing:
+   - Genres (45% weight)
+   - Cast members (15% weight)
+   - Franchise (5% weight)
+   - Average rating (35% weight)
+3. Returns top N similar movies
+
+Args:
+    user_id (int): Database user ID
+    top_n (int): Number of recommendations to return (default 10)
+    
+Returns:
+    list: List of dicts with keys:
+        - title: Movie title
+        - genres: Pipe-separated genre string
+        - cast_names: Pipe-separated cast string
+        - genre_sim, cast_sim, franchise_sim: Individual similarity scores
+        - hybrid_score: Combined score
+        - reference_movie: Title of the movie used as basis
+        - cast_overlap: List of shared cast members
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="406" column="1" bodyfile="model.py" bodystart="406" bodyend="523"/>
+        <references refid="db/dee/namespacemodel_1a3f3c6f856f4b587d404194ce557612b9" compoundref="d4/d0e/model_8py" startline="227" endline="254">create_spark_and_load_data</references>
+        <references refid="db/dee/namespacemodel_1ab4b65039e0d99a2d9cee6e1bb38f5728" compoundref="d4/d0e/model_8py" startline="33" endline="63">extract_cast_names</references>
+        <references refid="db/dee/namespacemodel_1a9f08323d5e43c2ca0f8ea63fb080305e" compoundref="d4/d0e/model_8py" startline="117" endline="138">franchise_similarity</references>
+      </memberdef>
+      <memberdef kind="function" id="db/dee/namespacemodel_1aae35f955631a4acd0af47fb50c207ad4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>model.get_recommendations_by_most_common_genre</definition>
+        <argsstring>(user_id, top_n=10)</argsstring>
+        <name>get_recommendations_by_most_common_genre</name>
+        <qualifiedname>model.get_recommendations_by_most_common_genre</qualifiedname>
+        <param>
+          <type>user_id</type>
+          <defname>user_id</defname>
+        </param>
+        <param>
+          <type>top_n</type>
+          <defname>top_n</defname>
+          <defval>10</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Generate recommendations based on user&apos;s most frequently watched genre.
+
+Algorithm:
+1. Identifies the most common genre in user&apos;s rated movies
+2. Filters movies containing that genre
+3. Scores movies using:
+   - Genre match (70% weight) - 1.0 if contains main genre, 0.0 otherwise
+   - Average rating (30% weight)
+4. Returns top N movies by combined score
+
+Args:
+    user_id (int): Database user ID
+    top_n (int): Number of recommendations to return (default 10)
+    
+Returns:
+    list: List of dicts with keys:
+        - title: Movie title
+        - genres: Pipe-separated genre string
+        - avg_rating: Movie&apos;s average rating
+        - genre_match: 1.0 if contains main genre, 0.0 otherwise
+        - score: Combined score [0.0, 1.0]
+</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="model.py" line="524" column="1" bodyfile="model.py" bodystart="524" bodyend="592"/>
+        <references refid="db/dee/namespacemodel_1a3f3c6f856f4b587d404194ce557612b9" compoundref="d4/d0e/model_8py" startline="227" endline="254">create_spark_and_load_data</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="model.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>

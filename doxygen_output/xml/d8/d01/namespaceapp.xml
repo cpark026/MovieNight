@@ -1,0 +1,450 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.15.0" xml:lang="en-US">
+  <compounddef id="d8/d01/namespaceapp" kind="namespace" language="Python">
+    <compoundname>app</compoundname>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1a675b4ea702c13dc4b8c05f985a25b496" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>app.app</definition>
+        <argsstring></argsstring>
+        <name>app</name>
+        <qualifiedname>app.app</qualifiedname>
+        <initializer>=  Flask(__name__)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="14" column="1" bodyfile="app.py" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1adca7658ff5c9024a5353574d2c01cbd2" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>app.secret_key</definition>
+        <argsstring></argsstring>
+        <name>secret_key</name>
+        <qualifiedname>app.secret_key</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="15" column="1" bodyfile="app.py" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1ace314a3a4fe27aff89bf592f9667725e" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>app.BASE_DIR</definition>
+        <argsstring></argsstring>
+        <name>BASE_DIR</name>
+        <qualifiedname>app.BASE_DIR</qualifiedname>
+        <initializer>=  os.path.dirname(os.path.abspath(__file__))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="18" column="1" bodyfile="app.py" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1aa415e29916d968fcac3218a022c03e66" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>app.DB_PATH</definition>
+        <argsstring></argsstring>
+        <name>DB_PATH</name>
+        <qualifiedname>app.DB_PATH</qualifiedname>
+        <initializer>=  os.path.join(<ref refid="d8/d01/namespaceapp_1ace314a3a4fe27aff89bf592f9667725e" kindref="member">BASE_DIR</ref>, &quot;movies.db&quot;)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="19" column="1" bodyfile="app.py" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1a9b91328d5b290eba229379a0276503b2" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>app.CSV_PATH</definition>
+        <argsstring></argsstring>
+        <name>CSV_PATH</name>
+        <qualifiedname>app.CSV_PATH</qualifiedname>
+        <initializer>=  os.path.join(<ref refid="d8/d01/namespaceapp_1ace314a3a4fe27aff89bf592f9667725e" kindref="member">BASE_DIR</ref>, &quot;output.csv&quot;)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="20" column="1" bodyfile="app.py" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1a1be3ff3df530efe98b0d7900a72ff83d" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool app::MODEL_READY</definition>
+        <argsstring></argsstring>
+        <name>MODEL_READY</name>
+        <qualifiedname>app.MODEL_READY</qualifiedname>
+        <initializer>=  <ref refid="d8/d01/namespaceapp_1a4f14203a53500e8593c3e2fec9ace1e8" kindref="member">True</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="26" column="1" bodyfile="app.py" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1ac351bc8c8bdb0115ef514201afc0cad4" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>app.TMDB_BEARER_TOKEN</definition>
+        <argsstring></argsstring>
+        <name>TMDB_BEARER_TOKEN</name>
+        <qualifiedname>app.TMDB_BEARER_TOKEN</qualifiedname>
+        <initializer>=  os.getenv(&quot;TMDB_BEARER_TOKEN&quot;)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="34" column="1" bodyfile="app.py" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1ab4a362027d4aa3246e0e0f57ebf177b0" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>app.debug</definition>
+        <argsstring></argsstring>
+        <name>debug</name>
+        <qualifiedname>app.debug</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="675" column="1" bodyfile="app.py" bodystart="675" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1a4f14203a53500e8593c3e2fec9ace1e8" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>app.True</definition>
+        <argsstring></argsstring>
+        <name>True</name>
+        <qualifiedname>app.True</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="675" column="1" bodyfile="app.py" bodystart="675" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="d8/d01/namespaceapp_1a7fa7c11c7474c128736b1d34b15a0d5e" prot="public" static="no" mutable="no">
+        <type></type>
+        <definition>app.host</definition>
+        <argsstring></argsstring>
+        <name>host</name>
+        <qualifiedname>app.host</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="675" column="1" bodyfile="app.py" bodystart="675" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a29ea904dfc0696a0dc49e4eefed30cb4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.hash_password</definition>
+        <argsstring>(password)</argsstring>
+        <name>hash_password</name>
+        <qualifiedname>app.hash_password</qualifiedname>
+        <param>
+          <type>password</type>
+          <defname>password</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Hash password using SHA-256</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="39" column="1" bodyfile="app.py" bodystart="39" bodyend="42"/>
+        <referencedby refid="d8/d01/namespaceapp_1a023708f0a4f908c4d1d082e8297adaa4" compoundref="de/d0e/app_8py" startline="43" endline="46">verify_password</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a023708f0a4f908c4d1d082e8297adaa4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.verify_password</definition>
+        <argsstring>(password, stored_hash)</argsstring>
+        <name>verify_password</name>
+        <qualifiedname>app.verify_password</qualifiedname>
+        <param>
+          <type>password</type>
+          <defname>password</defname>
+        </param>
+        <param>
+          <type>stored_hash</type>
+          <defname>stored_hash</defname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Verify password against stored hash</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="43" column="1" bodyfile="app.py" bodystart="43" bodyend="46"/>
+        <references refid="d8/d01/namespaceapp_1a29ea904dfc0696a0dc49e4eefed30cb4" compoundref="de/d0e/app_8py" startline="39" endline="42">hash_password</references>
+        <referencedby refid="d8/d01/namespaceapp_1a76d282343b497eaa7b6c29ff26930ba5" compoundref="de/d0e/app_8py" startline="68" endline="98">login</referencedby>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1ae050a5ea4a11cb13474a38c54941d6d5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.create_users_table</definition>
+        <argsstring>()</argsstring>
+        <name>create_users_table</name>
+        <qualifiedname>app.create_users_table</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Create users table if it doesn&apos;t exist</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="47" column="1" bodyfile="app.py" bodystart="47" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a76d282343b497eaa7b6c29ff26930ba5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.login</definition>
+        <argsstring>()</argsstring>
+        <name>login</name>
+        <qualifiedname>app.login</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Login endpoint that verifies password hash</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="68" column="1" bodyfile="app.py" bodystart="68" bodyend="98"/>
+        <references refid="d8/d01/namespaceapp_1a023708f0a4f908c4d1d082e8297adaa4" compoundref="de/d0e/app_8py" startline="43" endline="46">verify_password</references>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a6dc306eab41c5eed99baf38bc06a4668" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.register</definition>
+        <argsstring>()</argsstring>
+        <name>register</name>
+        <qualifiedname>app.register</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Register a new user</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="99" column="1" bodyfile="app.py" bodystart="99" bodyend="139"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a9f05968c1b0330ec22192fe3b94f89d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.check_auth</definition>
+        <argsstring>()</argsstring>
+        <name>check_auth</name>
+        <qualifiedname>app.check_auth</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Check if user is authenticated and return username</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="140" column="1" bodyfile="app.py" bodystart="140" bodyend="146"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a9dac0af1c419402c9fde1edaad902ee3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.logout_user</definition>
+        <argsstring>()</argsstring>
+        <name>logout_user</name>
+        <qualifiedname>app.logout_user</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><verbatim>Logout user by clearing session</verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="147" column="1" bodyfile="app.py" bodystart="147" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a4727fbeb35bed8ec5000ba2eb4cec4a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.index</definition>
+        <argsstring>()</argsstring>
+        <name>index</name>
+        <qualifiedname>app.index</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="153" column="1" bodyfile="app.py" bodystart="153" bodyend="158"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a077d1ad6abf189b78a1610c878e01c9b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.login_page</definition>
+        <argsstring>()</argsstring>
+        <name>login_page</name>
+        <qualifiedname>app.login_page</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="159" column="1" bodyfile="app.py" bodystart="159" bodyend="164"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a08ab40e109a3efe62f83e7367b4f863b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.results</definition>
+        <argsstring>()</argsstring>
+        <name>results</name>
+        <qualifiedname>app.results</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="165" column="1" bodyfile="app.py" bodystart="165" bodyend="170"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a8b372a918ee97d7ff6cffdf6eaca33b8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.get_watchlist_ids</definition>
+        <argsstring>()</argsstring>
+        <name>get_watchlist_ids</name>
+        <qualifiedname>app.get_watchlist_ids</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="171" column="1" bodyfile="app.py" bodystart="171" bodyend="189"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a9e01645b34c78bfe72802df0d53337c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.add_show</definition>
+        <argsstring>()</argsstring>
+        <name>add_show</name>
+        <qualifiedname>app.add_show</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="190" column="1" bodyfile="app.py" bodystart="190" bodyend="227"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a20cfa6dfb8017597286525a7fd970e22" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.get_results</definition>
+        <argsstring>()</argsstring>
+        <name>get_results</name>
+        <qualifiedname>app.get_results</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="228" column="1" bodyfile="app.py" bodystart="228" bodyend="294"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a1be818348f2faaaff120efc6f1b72858" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.get_last_added_movie</definition>
+        <argsstring>()</argsstring>
+        <name>get_last_added_movie</name>
+        <qualifiedname>app.get_last_added_movie</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="295" column="1" bodyfile="app.py" bodystart="295" bodyend="315"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a97704a090b614292672233d1f29c1392" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.get_recommendations</definition>
+        <argsstring>()</argsstring>
+        <name>get_recommendations</name>
+        <qualifiedname>app.get_recommendations</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="316" column="1" bodyfile="app.py" bodystart="316" bodyend="411"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1aeb0c97750a55d0edbade069bfc036fa8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.get_last_watched_recommendations</definition>
+        <argsstring>()</argsstring>
+        <name>get_last_watched_recommendations</name>
+        <qualifiedname>app.get_last_watched_recommendations</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="412" column="1" bodyfile="app.py" bodystart="412" bodyend="509"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1ad28cc90371563d3c4b852d0c722830bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.get_most_common_genre_recommendations</definition>
+        <argsstring>()</argsstring>
+        <name>get_most_common_genre_recommendations</name>
+        <qualifiedname>app.get_most_common_genre_recommendations</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="510" column="1" bodyfile="app.py" bodystart="510" bodyend="603"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1a54e9f661e6d4f59e9619f9ad455f3439" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.get_most_common_genre</definition>
+        <argsstring>()</argsstring>
+        <name>get_most_common_genre</name>
+        <qualifiedname>app.get_most_common_genre</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="604" column="1" bodyfile="app.py" bodystart="604" bodyend="641"/>
+      </memberdef>
+      <memberdef kind="function" id="d8/d01/namespaceapp_1af6c893d43544cf6a30da8a5b62f7d690" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>app.create_movies_table</definition>
+        <argsstring>()</argsstring>
+        <name>create_movies_table</name>
+        <qualifiedname>app.create_movies_table</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="app.py" line="642" column="1" bodyfile="app.py" bodystart="642" bodyend="670"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="app.py" line="1" column="1"/>
+  </compounddef>
+</doxygen>
