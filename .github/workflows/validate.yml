@@ -25,10 +25,10 @@ jobs:
     
     - name: Check Python syntax
       run: |
-        python -m py_compile app.py model2.py
+        python -m py_compile app.py model.py
     
     - name: Lint with flake8 (optional)
       continue-on-error: true
       run: |
         pip install flake8
-        flake8 app.py model2.py --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 app.py model.py --count --select=E9,F63,F7,F82 --show-source --statistics
