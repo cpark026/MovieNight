@@ -102,6 +102,11 @@ node_modules/
 dist/
 build/
 
-# Markdown files (keep only README.md)
+# Markdown files (keep documentation and README)
 *.md
 !README.md
+!HYPERPARAMETER_TUNER_GUIDE.md
+!QUICK_START_TUNING.md
+!MODEL_OPTIMIZATION_STRATEGY.md
+!PHASE_1_IMPLEMENTATION.md
+!HYPERPARAMETERS.md
