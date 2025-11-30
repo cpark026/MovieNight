@@ -144,8 +144,6 @@ function displayRecommendationsSection(recommendations, containerId) {
         title.textContent = `#${idx + 1} ${movie.title || "Untitled"}`;
         card.appendChild(title);
 
-        console.log(movie)
-
         if (movie.genres) {
             const genres = document.createElement("p");
             genres.className = "genres";

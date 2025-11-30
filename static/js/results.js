@@ -106,7 +106,6 @@ async function fetchWatchlistIDs() {
     try {
         const response = await fetch("/getWatchlistIDs");
         const shows = await response.json();
-        console.log(shows.map(show => show.mediaID))
         return shows.map(show => show.mediaID);
     } catch (error) {
         console.error("Error fetching watchlist:", error);
