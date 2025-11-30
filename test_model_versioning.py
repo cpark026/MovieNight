@@ -304,7 +304,7 @@ class TestModelVersioning(unittest.TestCase):
         import model_versioning
         model_versioning.DB_PATH = self.test_db
         
-        needs_retrain, accuracy = should_retrain(accuracy_threshold=0.5)
+        needs_retrain, accuracy = should_retrain(accuracy_threshold=0.65)
         
         self.assertIsInstance(needs_retrain, bool)
         self.assertIsInstance(accuracy, float)
@@ -428,7 +428,7 @@ class TestModelVersioning(unittest.TestCase):
         conn.close()
         
         # Check recent accuracy (25% average)
-        needs_retrain, accuracy = should_retrain(accuracy_threshold=0.5)
+        needs_retrain, accuracy = should_retrain(accuracy_threshold=0.65)
         
         # Should trigger retraining due to low accuracy
         self.assertTrue(needs_retrain)

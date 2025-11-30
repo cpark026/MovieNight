@@ -43,7 +43,7 @@ from model_versioning import (
 DB_PATH = "movies.db"
 
 
-def check_retraining_trigger(force=False, accuracy_threshold=0.5):
+def check_retraining_trigger(force=False, accuracy_threshold=0.65):
     """Check if retraining should be triggered."""
     if force:
         logger.info("FORCE: Retraining triggered by user request")
@@ -168,7 +168,7 @@ def main():
     parser = argparse.ArgumentParser(description="Model Retraining Orchestration")
     parser.add_argument("--force", action="store_true", help="Force retraining regardless of accuracy")
     parser.add_argument("--days", type=int, default=30, help="Days of data to use for retraining")
-    parser.add_argument("--threshold", type=float, default=0.5, help="Accuracy threshold for retraining")
+    parser.add_argument("--threshold", type=float, default=0.65, help="Accuracy threshold for retraining (default 65%)")
     parser.add_argument("--min-samples", type=int, default=5, help="Minimum samples per movie")
     parser.add_argument("--stats", action="store_true", help="Just show model statistics")
     parser.add_argument("--dry-run", action="store_true", help="Don't activate new version, just prepare")

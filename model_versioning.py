@@ -424,13 +424,13 @@ def evaluate_ab_test(test_id):
     }
 
 
-def should_retrain(user_id=None, accuracy_threshold=0.5):
+def should_retrain(user_id=None, accuracy_threshold=0.65):
     """
     Determine if model should be retrained based on accuracy.
     
     Args:
         user_id: Check specific user (None for all)
-        accuracy_threshold: If accuracy below this, retrain
+        accuracy_threshold: If accuracy below this, retrain (default 0.65 = 65%)
     
     Returns:
         (should_retrain, current_accuracy)
