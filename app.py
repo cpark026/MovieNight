@@ -7,6 +7,7 @@ import os
 import hashlib
 import secrets
 import csv
+import threading
 from dotenv import load_dotenv
 
 # Add model_training folder to path for imports
@@ -46,49 +47,67 @@ CSV_PATH = os.path.join(BASE_DIR, "output.csv")
 # Lazy-load model on first use (avoids PySpark startup delay on app initialization)
 model = None
 MODEL_READY = False
+_model_lock = threading.Lock()  # Prevent concurrent model initialization
 
 # CSV cache (lazy-loaded)
 _movie_data_cache = None
+_csv_lock = threading.Lock()  # Prevent concurrent CSV loading
 
 def get_model():
     """Lazy-load model on first request. Returns model or None if initialization failed."""
     global model, MODEL_READY
+    
+    # Fast path: model already loaded
     if model is not None:
         return model
     
-    try:
-        import model as model_module
-        model = model_module
-        MODEL_READY = True
-        print("[INFO] Model initialized on first request")
-        return model
-    except Exception as e:
-        print(f"[ERROR] Could not initialize model: {e}")
-        MODEL_READY = False
-        return None
+    # Slow path: need to initialize
+    with _model_lock:
+        # Double-check after acquiring lock (another thread may have initialized)
+        if model is not None:
+            return model
+        
+        try:
+            import model as model_module
+            model = model_module
+            MODEL_READY = True
+            print("[INFO] Model initialized on first request")
+            return model
+        except Exception as e:
+            print(f"[ERROR] Could not initialize model: {e}")
+            MODEL_READY = False
+            return None
 
 def load_movie_data():
     """Load movie CSV data once and cache it. Dramatically speeds up subsequent requests."""
     global _movie_data_cache
+    
+    # Fast path: CSV already loaded
     if _movie_data_cache is not None:
         return _movie_data_cache
     
-    print(f"[DEBUG] Loading CSV from: {CSV_PATH}")
-    movie_data = {}
-    
-    with open(CSV_PATH, 'r', encoding='utf-8') as f:
-        reader = csv.reader(f)
-        next(reader)  # Skip header
-        for row in reader:
-            if len(row) > 1:
-                movie_id = row[1].strip()  # ID is at index 1
-                title = row[4].strip()  # Title is at index 4
-                movie_data[movie_id] = row
-                movie_data[title] = row
-    
-    print(f"[DEBUG] Loaded {len(movie_data)} movies into cache")
-    _movie_data_cache = movie_data
-    return _movie_data_cache
+    # Slow path: need to load from disk
+    with _csv_lock:
+        # Double-check after acquiring lock (another thread may have loaded)
+        if _movie_data_cache is not None:
+            return _movie_data_cache
+        
+        print(f"[DEBUG] Loading CSV from: {CSV_PATH}")
+        movie_data = {}
+        
+        with open(CSV_PATH, 'r', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            next(reader)  # Skip header
+            for row in reader:
+                if len(row) > 1:
+                    movie_id = row[1].strip()  # ID is at index 1
+                    title = row[4].strip()  # Title is at index 4
+                    movie_data[movie_id] = row
+                    movie_data[title] = row
+        
+        print(f"[DEBUG] Loaded {len(movie_data)} movies into cache")
+        _movie_data_cache = movie_data
+        return _movie_data_cache
 
 # Initialize feedback system
 try:
@@ -99,6 +118,18 @@ try:
 except Exception as e:
     print(f"Warning: Could not initialize feedback system: {e}")
     FEEDBACK_READY = False
+
+# Optional: Warm up model in background thread (non-blocking)
+# Comment out if you want lazy loading on first request instead
+def _warmup_model():
+    """Initialize model in background so first request doesn't wait"""
+    print("[WARMUP] Starting model warmup in background thread...")
+    get_model()
+    print("[WARMUP] Model warmup complete")
+
+# Start warmup in a daemon thread (won't block app startup)
+_warmup_thread = threading.Thread(target=_warmup_model, daemon=True)
+_warmup_thread.start()
 
 # ========================
 # TMDb Bearer token (from environment)

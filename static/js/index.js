@@ -40,8 +40,13 @@ async function checkAuthAndDisplayUsername() {
                     displayCachedRecommendations(cached);
                     // Clear from sessionStorage after use
                     sessionStorage.removeItem('cachedRecommendations');
-                    // Fetch fresh recommendations in background (skipRebuild=true to preserve cache display)
-                    fetchAllRecommendations(true);
+                    
+                    // Fetch fresh recommendations in background with a small delay
+                    // This gives users time to see cached data and improves perceived performance
+                    setTimeout(() => {
+                        console.log('[INDEX] Starting background refresh of recommendations...');
+                        fetchAllRecommendations(true);
+                    }, 2000);  // 2 second delay before background fetch
                 } catch (e) {
                     console.error('Error parsing cached recommendations:', e);
                     fetchAllRecommendations(false);
