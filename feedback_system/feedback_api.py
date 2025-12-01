@@ -99,6 +99,27 @@ def register_feedback_routes(app):
             # Get updated patterns
             patterns = get_dislike_pattern_analysis(user_id)
             
+            # Check if retraining should be triggered
+            from .feedback_reinforcement import should_retrain_from_feedback, get_negative_training_batch, mark_negative_examples_as_used
+            retrain_status = "Not needed"
+            retrain_triggered = False
+            
+            if should_retrain_from_feedback():
+                retrain_triggered = True
+                retrain_status = "Triggered - model will incorporate this feedback"
+                print(f"[API] Retraining triggered due to feedback accumulation")
+                
+                # Log that retraining is queued
+                try:
+                    negative_batch = get_negative_training_batch(limit=100)
+                    if negative_batch:
+                        example_ids = [ex.get('id') for ex in negative_batch if ex.get('id')]
+                        if example_ids:
+                            mark_negative_examples_as_used(example_ids)
+                            print(f"[API] Marked {len(example_ids)} examples as used for retraining")
+                except Exception as e:
+                    print(f"[API] Error processing retraining batch: {e}")
+            
             return jsonify({
                 'success': True,
                 'dislike_id': dislike_id,
@@ -107,7 +128,9 @@ def register_feedback_routes(app):
                     'weight': training_data.get('weight', 0.0)
                 },
                 'feature_adjustments': feature_adjustments,
-                'user_patterns': patterns
+                'user_patterns': patterns,
+                'retraining_status': retrain_status,
+                'retraining_triggered': retrain_triggered
             }), 201
         
         except Exception as e:

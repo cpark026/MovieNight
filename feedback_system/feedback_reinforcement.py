@@ -22,7 +22,7 @@ DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 
 # Constants for feedback reinforcement
 DISLIKE_WEIGHT_MULTIPLIER = 0.8  # How strongly dislikes affect model
-FEEDBACK_ACCUMULATION_THRESHOLD = 20  # Retrain when this many new dislikes recorded
+FEEDBACK_ACCUMULATION_THRESHOLD = 1  # Retrain when this many new dislikes recorded
 GENRE_DEEMPHASIS_FACTOR = 0.15  # Reduce genre importance by this % per dislike
 CAST_DEEMPHASIS_FACTOR = 0.10
 FRANCHISE_DEEMPHASIS_FACTOR = 0.12

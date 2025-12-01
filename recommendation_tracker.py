@@ -59,14 +59,22 @@ def save_recommendation_set(user_id: int, recommendations: List[Dict],
         for rank, rec in enumerate(recommendations, 1):
             predicted_score = rec.get('hybrid_score', rec.get('score', 0.0))
             movie_title = rec.get('title', 'Unknown')
+            movie_id = rec.get('id', None)
             
-            print(f"[TRACKER]   Rank {rank}: '{movie_title}' (score: {predicted_score})")
+            # Try to convert movie_id to int if it's a float
+            if movie_id is not None:
+                try:
+                    movie_id = int(float(movie_id))
+                except (ValueError, TypeError):
+                    pass
+            
+            print(f"[TRACKER]   Rank {rank}: '{movie_title}' (id: {movie_id}, score: {predicted_score})")
             
             cur.execute("""
                 INSERT INTO recommendation_set_items 
                 (recommendation_set_id, movie_id, movie_title, predicted_score, rank_position)
-                VALUES (?, NULL, ?, ?, ?)
-            """, (recommendation_set_id, movie_title, predicted_score, rank))
+                VALUES (?, ?, ?, ?, ?)
+            """, (recommendation_set_id, movie_id, movie_title, predicted_score, rank))
         
         conn.commit()
         print(f"[TRACKER] ✓ Successfully saved recommendation set {recommendation_set_id}")

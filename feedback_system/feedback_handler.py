@@ -229,6 +229,37 @@ def calculate_dislike_weight(user_id: int, movie_id: Optional[int]) -> float:
         conn.close()
 
 
+def get_user_disliked_movies(user_id: int) -> List[int]:
+    """
+    Get list of movie IDs that a user has disliked.
+    
+    Used to filter out disliked movies from recommendations.
+    
+    Args:
+        user_id (int): User ID
+        
+    Returns:
+        List[int]: List of movie IDs user has disliked
+    """
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    
+    try:
+        cur.execute("""
+            SELECT DISTINCT movie_id
+            FROM user_dislikes
+            WHERE user_id = ? AND movie_id IS NOT NULL
+        """, (user_id,))
+        
+        results = [row[0] for row in cur.fetchall()]
+        return results
+    except Exception as e:
+        print(f"[FEEDBACK ERROR] Failed to get disliked movies: {e}")
+        return []
+    finally:
+        conn.close()
+
+
 def get_dislike_pattern_analysis(user_id: int) -> Dict:
     """
     Analyze patterns in user dislikes to identify systematic issues.

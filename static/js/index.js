@@ -310,12 +310,15 @@ cancelBtn.addEventListener("click", () => {
                     confirmation.style.fontWeight = "bold";
                     card.appendChild(confirmation);
                     
-                    // Fade out card after 2 seconds
+                    // Fade out card after 2 seconds, then fetch new recommendations
                     setTimeout(() => {
                         card.style.opacity = "0";
                         card.style.transition = "opacity 0.5s ease-out";
                         setTimeout(() => {
                             card.style.display = "none";
+                            // Fetch new recommendations to replace the disliked one
+                            console.log('[FEEDBACK] Fetching fresh recommendations after dislike...');
+                            fetchAllRecommendations();
                         }, 500);
                     }, 2000);
                 } else {

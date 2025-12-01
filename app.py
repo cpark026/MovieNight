@@ -385,14 +385,69 @@ def get_recommendations():
     
     try:
         print(f"[DEBUG] Fetching top 10 recommendations for user {session['user_id']}...")
-        recommendations = model.get_top_recommendations(session['user_id'], top_n=10)
+        # Request 15 to account for filtering disliked movies, aim to return 10
+        recommendations = model.get_top_recommendations(session['user_id'], top_n=15)
         print(f"[DEBUG] Received {len(recommendations)} recommendations")
         
         if not recommendations:
             print("[DEBUG] No recommendations returned from model")
             return jsonify({"error": "No recommendations found"}), 404
         
-        # Save recommendations for later validation
+        # Get user's disliked movies and filter them out BEFORE saving
+        try:
+            from feedback_system import get_user_disliked_movies
+            disliked_movie_ids = set(get_user_disliked_movies(session['user_id']))
+            print(f"[DEBUG] User has disliked {len(disliked_movie_ids)} movies: {disliked_movie_ids}")
+            
+            # Also get disliked movie titles for fallback filtering
+            conn = sqlite3.connect("movies.db")
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT DISTINCT movie_title FROM user_dislikes 
+                WHERE user_id = ? AND movie_title IS NOT NULL
+            """, (session['user_id'],))
+            disliked_titles = set(row[0] for row in cur.fetchall())
+            conn.close()
+            print(f"[DEBUG] User has disliked {len(disliked_titles)} movie titles: {disliked_titles}")
+            
+            # Filter out disliked movies from recommendations
+            # Convert IDs to int for comparison to handle float/int type differences
+            filtered_recommendations = []
+            for rec in recommendations:
+                rec_id = rec.get('id')
+                rec_title = rec.get('title', '')
+                
+                # Check by ID first (preferred)
+                if rec_id is not None:
+                    try:
+                        rec_id_int = int(float(rec_id))
+                    except (ValueError, TypeError):
+                        rec_id_int = rec_id
+                    
+                    if rec_id_int not in disliked_movie_ids:
+                        filtered_recommendations.append(rec)
+                    else:
+                        print(f"[DEBUG] Filtered out by ID: {rec_title} (ID: {rec_id_int})")
+                # Fallback: check by title if ID is None
+                elif rec_title not in disliked_titles:
+                    filtered_recommendations.append(rec)
+                else:
+                    print(f"[DEBUG] Filtered out by title: {rec_title}")
+            
+            recommendations = filtered_recommendations
+            print(f"[DEBUG] After filtering dislikes: {len(recommendations)} recommendations remain")
+        except Exception as e:
+            print(f"[DEBUG] Error filtering disliked movies: {e}")
+        
+        # Limit to 10 recommendations after filtering
+        recommendations = recommendations[:10]
+        print(f"[DEBUG] Limited to 10 recommendations: {len(recommendations)} final")
+        
+        if not recommendations:
+            print("[DEBUG] No recommendations after filtering dislikes")
+            return jsonify({"error": "No recommendations found"}), 404
+        
+        # Save recommendations for later validation (AFTER filtering)
         rec_set_id = save_recommendation_set(session['user_id'], recommendations, "general")
         
         # Check if model needs revalidation
@@ -495,8 +550,59 @@ def get_last_watched_recommendations():
         import csv
         
         print(f"[DEBUG] Fetching top 10 recommendations from model...")
-        recommendations = model.get_recommendations_for_last_added(session['user_id'], top_n=10)
+        # Request 15 to account for filtering disliked movies, aim to return 10
+        recommendations = model.get_recommendations_for_last_added(session['user_id'], top_n=15)
         print(f"[DEBUG] Received {len(recommendations)} recommendations")
+        
+        # Filter out disliked movies
+        try:
+            from feedback_system import get_user_disliked_movies
+            disliked_movie_ids = set(get_user_disliked_movies(session['user_id']))
+            print(f"[DEBUG] User has disliked {len(disliked_movie_ids)} movies: {disliked_movie_ids}")
+            
+            # Also get disliked movie titles for fallback filtering
+            conn = sqlite3.connect("movies.db")
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT DISTINCT movie_title FROM user_dislikes 
+                WHERE user_id = ? AND movie_title IS NOT NULL
+            """, (session['user_id'],))
+            disliked_titles = set(row[0] for row in cur.fetchall())
+            conn.close()
+            print(f"[DEBUG] User has disliked {len(disliked_titles)} movie titles: {disliked_titles}")
+            
+            # Filter out disliked movies from recommendations
+            # Convert IDs to int for comparison to handle float/int type differences
+            filtered_recommendations = []
+            for rec in recommendations:
+                rec_id = rec.get('id')
+                rec_title = rec.get('title', '')
+                
+                # Check by ID first (preferred)
+                if rec_id is not None:
+                    try:
+                        rec_id_int = int(float(rec_id))
+                    except (ValueError, TypeError):
+                        rec_id_int = rec_id
+                    
+                    if rec_id_int not in disliked_movie_ids:
+                        filtered_recommendations.append(rec)
+                    else:
+                        print(f"[DEBUG] Filtered out by ID: {rec_title} (ID: {rec_id_int})")
+                # Fallback: check by title if ID is None
+                elif rec_title not in disliked_titles:
+                    filtered_recommendations.append(rec)
+                else:
+                    print(f"[DEBUG] Filtered out by title: {rec_title}")
+            
+            recommendations = filtered_recommendations
+            print(f"[DEBUG] After filtering dislikes: {len(recommendations)} recommendations remain")
+        except Exception as e:
+            print(f"[DEBUG] Error filtering disliked movies: {e}")
+        
+        # Limit to 10 recommendations after filtering
+        recommendations = recommendations[:10]
+        print(f"[DEBUG] Limited to 10 recommendations: {len(recommendations)} final")
         
         if not recommendations:
             print("[DEBUG] No recommendations returned from model")
@@ -605,8 +711,59 @@ def get_most_common_genre_recommendations():
         import csv
 
         print("[DEBUG] Fetching most-common-genre recommendations...")
-        recommendations = model.get_recommendations_by_most_common_genre(session['user_id'], top_n=10)
+        # Request 15 to account for filtering disliked movies, aim to return 10
+        recommendations = model.get_recommendations_by_most_common_genre(session['user_id'], top_n=15)
         print(f"[DEBUG] Received {len(recommendations)} recommendations")
+
+        # Filter out disliked movies
+        try:
+            from feedback_system import get_user_disliked_movies
+            disliked_movie_ids = set(get_user_disliked_movies(session['user_id']))
+            print(f"[DEBUG] User has disliked {len(disliked_movie_ids)} movies: {disliked_movie_ids}")
+            
+            # Also get disliked movie titles for fallback filtering
+            conn = sqlite3.connect("movies.db")
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT DISTINCT movie_title FROM user_dislikes 
+                WHERE user_id = ? AND movie_title IS NOT NULL
+            """, (session['user_id'],))
+            disliked_titles = set(row[0] for row in cur.fetchall())
+            conn.close()
+            print(f"[DEBUG] User has disliked {len(disliked_titles)} movie titles: {disliked_titles}")
+            
+            # Filter out disliked movies from recommendations
+            # Convert IDs to int for comparison to handle float/int type differences
+            filtered_recommendations = []
+            for rec in recommendations:
+                rec_id = rec.get('id')
+                rec_title = rec.get('title', '')
+                
+                # Check by ID first (preferred)
+                if rec_id is not None:
+                    try:
+                        rec_id_int = int(float(rec_id))
+                    except (ValueError, TypeError):
+                        rec_id_int = rec_id
+                    
+                    if rec_id_int not in disliked_movie_ids:
+                        filtered_recommendations.append(rec)
+                    else:
+                        print(f"[DEBUG] Filtered out by ID: {rec_title} (ID: {rec_id_int})")
+                # Fallback: check by title if ID is None
+                elif rec_title not in disliked_titles:
+                    filtered_recommendations.append(rec)
+                else:
+                    print(f"[DEBUG] Filtered out by title: {rec_title}")
+            
+            recommendations = filtered_recommendations
+            print(f"[DEBUG] After filtering dislikes: {len(recommendations)} recommendations remain")
+        except Exception as e:
+            print(f"[DEBUG] Error filtering disliked movies: {e}")
+
+        # Limit to 10 recommendations after filtering
+        recommendations = recommendations[:10]
+        print(f"[DEBUG] Limited to 10 recommendations: {len(recommendations)} final")
 
         if not recommendations:
             print("[DEBUG] No recommendations returned from model")
@@ -895,7 +1052,27 @@ def get_model_versions():
 def trigger_retraining():
     """Trigger model retraining with weighted data"""
     try:
-        # Check if retraining is needed
+        # Check if feedback-based retraining should happen first
+        from feedback_system import should_retrain_from_feedback, get_negative_training_batch, mark_negative_examples_as_used
+        
+        if should_retrain_from_feedback():
+            print("[RETRAINING] Feedback threshold reached - triggering feedback-based retraining")
+            
+            # Get negative training batch
+            negative_batch = get_negative_training_batch(limit=100)
+            if negative_batch:
+                print(f"[RETRAINING] Retrieved {len(negative_batch)} negative training examples")
+                
+                # Get their IDs for marking as used
+                example_ids = [ex.get('id') for ex in negative_batch if ex.get('id')]
+                
+                # Here you would integrate the negative examples into model retraining
+                # For now, mark them as used to prevent duplicate processing
+                if example_ids:
+                    mark_negative_examples_as_used(example_ids)
+                    print(f"[RETRAINING] Marked {len(example_ids)} examples as used")
+        
+        # Check if retraining is needed based on accuracy
         needs_retrain, accuracy = should_retrain(accuracy_threshold=0.5)
         
         if not needs_retrain:

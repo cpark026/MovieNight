@@ -17,6 +17,7 @@ Usage:
 from .feedback_handler import (
     save_dislike,
     get_user_dislikes,
+    get_user_disliked_movies,
     calculate_dislike_weight,
     get_dislike_pattern_analysis,
     record_feedback_impact,
@@ -42,6 +43,7 @@ __all__ = [
     # Handler functions
     'save_dislike',
     'get_user_dislikes',
+    'get_user_disliked_movies',
     'calculate_dislike_weight',
     'get_dislike_pattern_analysis',
     'record_feedback_impact',
