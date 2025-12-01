@@ -435,3 +435,81 @@ def invalidate_old_recommendations(user_id: int, days: int = 30) -> int:
         return 0
     finally:
         conn.close()
+
+
+def get_cached_recommendations(user_id: int, limit: int = 10) -> Dict[str, List]:
+    """
+    Retrieve the most recent cached recommendations for a user.
+    
+    Loads previously generated recommendations from the database so we can
+    serve them instantly on login without waiting for model computation.
+    
+    Args:
+        user_id (int): User ID
+        limit (int): Max recommendations to return per category
+        
+    Returns:
+        Dict with keys:
+            - general: Most recent general recommendations
+            - last_added: Most recent last_added recommendations
+            - genre_based: Most recent genre_based recommendations
+            Each contains list of dicts with title, predicted_score, rank
+    """
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    
+    result = {
+        "general": [],
+        "last_added": [],
+        "genre_based": []
+    }
+    
+    try:
+        # For each recommendation type, get the most recent set
+        for rec_type in ["general", "last_added", "genre_based"]:
+            cur.execute("""
+                SELECT rsi.movie_title, rsi.predicted_score, rsi.rank_position, 
+                       rsi.movie_id, rs.id as set_id
+                FROM recommendation_set_items rsi
+                JOIN recommendation_sets rs ON rsi.recommendation_set_id = rs.id
+                WHERE rs.user_id = ? 
+                AND rs.recommendation_type = ?
+                AND rs.is_valid = 1
+                ORDER BY rs.generated_at DESC
+                LIMIT 1
+            """, (user_id, rec_type))
+            
+            recent_set = cur.fetchone()
+            if not recent_set:
+                continue
+            
+            set_id = recent_set['set_id']
+            
+            # Get all items from this set
+            cur.execute("""
+                SELECT movie_title, predicted_score, rank_position, movie_id
+                FROM recommendation_set_items
+                WHERE recommendation_set_id = ?
+                ORDER BY rank_position ASC
+                LIMIT ?
+            """, (set_id, limit))
+            
+            items = cur.fetchall()
+            for item in items:
+                result[rec_type].append({
+                    "title": item['movie_title'],
+                    "score": item['predicted_score'],
+                    "id": item['movie_id']
+                })
+        
+        print(f"[CACHE] Retrieved {sum(len(v) for v in result.values())} cached recommendations for user {user_id}")
+        return result
+        
+    except Exception as e:
+        print(f"[CACHE] Error retrieving cached recommendations: {e}")
+        import traceback
+        traceback.print_exc()
+        return result
+    finally:
+        conn.close()

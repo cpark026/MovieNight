@@ -59,6 +59,13 @@ authForm.addEventListener('submit', async function(e) {
 
         if (response.ok) {
             showSuccess(isLoginMode ? 'Login successful!' : 'Registration successful!');
+            
+            // Store cached recommendations in sessionStorage so index.js can use them
+            if (data.cached_recommendations) {
+                sessionStorage.setItem('cachedRecommendations', JSON.stringify(data.cached_recommendations));
+                console.log('[LOGIN] Cached recommendations stored:', data.cached_recommendations);
+            }
+            
             setTimeout(() => {
                 window.location.href = '/';
             }, 1500);

@@ -30,7 +30,26 @@ async function checkAuthAndDisplayUsername() {
             if (usernameDisplay) {
                 usernameDisplay.textContent = `Welcome, ${data.username}`;
             }
-            fetchAllRecommendations();
+            
+            // Load cached recommendations first (instant display)
+            const cachedRecs = sessionStorage.getItem('cachedRecommendations');
+            if (cachedRecs) {
+                try {
+                    const cached = JSON.parse(cachedRecs);
+                    console.log('[INDEX] Using cached recommendations from login');
+                    displayCachedRecommendations(cached);
+                    // Clear from sessionStorage after use
+                    sessionStorage.removeItem('cachedRecommendations');
+                    // Fetch fresh recommendations in background (skipRebuild=true to preserve cache display)
+                    fetchAllRecommendations(true);
+                } catch (e) {
+                    console.error('Error parsing cached recommendations:', e);
+                    fetchAllRecommendations(false);
+                }
+            } else {
+                // No cache, fetch recommendations normally
+                fetchAllRecommendations(false);
+            }
         } else {
             window.location.href = "/";
         }
@@ -58,22 +77,26 @@ async function logout() {
 }
 
 // ===== FETCH RECOMMENDATIONS =====
-async function fetchAllRecommendations() {
+async function fetchAllRecommendations(skipRebuild = false) {
     const fetchStartTime = performance.now();
-    mainElement.innerHTML = `
-        <section id="full-recs-section">
-            <h2>Personalized Recommendations</h2>
-            <div id="full-recs-container"><p>Loading…</p></div>
-        </section>
-        <section id="last-recs-section" style="margin-top: 2rem;">
-            <h2 id="last-recs-title">Because You Last Added</h2>
-            <div id="last-recs-container"><p>Loading…</p></div>
-        </section>
-        <section id="genre-recs-section" style="margin-top: 2rem;">
-            <h2 id="genre-recs-title">Based on your most watched genre</h2>
-            <div id="genre-recs-container"><p>Loading…</p></div>
-        </section>
-    `;
+    
+    // Only rebuild DOM if not already showing cached recommendations
+    if (!skipRebuild) {
+        mainElement.innerHTML = `
+            <section id="full-recs-section">
+                <h2>Personalized Recommendations</h2>
+                <div id="full-recs-container"><p>Loading…</p></div>
+            </section>
+            <section id="last-recs-section" style="margin-top: 2rem;">
+                <h2 id="last-recs-title">Because You Last Added</h2>
+                <div id="last-recs-container"><p>Loading…</p></div>
+            </section>
+            <section id="genre-recs-section" style="margin-top: 2rem;">
+                <h2 id="genre-recs-title">Based on your most watched genre</h2>
+                <div id="genre-recs-container"><p>Loading…</p></div>
+            </section>
+        `;
+    }
 
     try {
         const [fullData, lastData, lastMovieData, genreData, mostCommonGenreData] = await Promise.all([
@@ -121,6 +144,47 @@ async function fetchAllRecommendations() {
         console.error("Error fetching recommendations:", err);
         mainElement.innerHTML = "<p>Failed to load recommendations.</p>";
     }
+}
+
+// ===== DISPLAY CACHED RECOMMENDATIONS (instant load on login) =====
+function displayCachedRecommendations(cachedData) {
+    console.log('[CACHE] Displaying cached recommendations');
+    
+    mainElement.innerHTML = `
+        <section id="full-recs-section">
+            <h2>Personalized Recommendations</h2>
+            <div id="full-recs-container"><p>Loading…</p></div>
+        </section>
+        <section id="last-recs-section" style="margin-top: 2rem;">
+            <h2 id="last-recs-title">Because You Last Added</h2>
+            <div id="last-recs-container"><p>Loading…</p></div>
+        </section>
+        <section id="genre-recs-section" style="margin-top: 2rem;">
+            <h2 id="genre-recs-title">Based on your most watched genre</h2>
+            <div id="genre-recs-container"><p>Loading…</p></div>
+        </section>
+    `;
+    
+    // Display cached recommendations
+    if (cachedData.general?.length) {
+        displayRecommendationsSection(cachedData.general, "full-recs-container");
+    } else {
+        document.getElementById("full-recs-container").innerHTML = "<p>No personalized recommendations available.</p>";
+    }
+    
+    if (cachedData.last_added?.length) {
+        displayRecommendationsSection(cachedData.last_added, "last-recs-container");
+    } else {
+        document.getElementById("last-recs-container").innerHTML = "<p>No last-added recommendations available.</p>";
+    }
+    
+    if (cachedData.genre_based?.length) {
+        displayRecommendationsSection(cachedData.genre_based, "genre-recs-container");
+    } else {
+        document.getElementById("genre-recs-container").innerHTML = "<p>No genre-based recommendations available.</p>";
+    }
+    
+    console.log('[CACHE] Cached recommendations displayed successfully');
 }
 
 // ===== DISPLAY SECTION (reusable) =====

@@ -19,7 +19,8 @@ from recommendation_tracker import (
     save_recommendation_set, 
     check_for_model_revalidation,
     get_model_performance_metrics,
-    validate_recommendation_against_rating
+    validate_recommendation_against_rating,
+    get_cached_recommendations
 )
 from model_versioning import (
     init_model_versioning,
@@ -160,7 +161,15 @@ def login():
         session.permanent = True
         session['user_id'] = user['id']
         session['username'] = username
-        return jsonify({"success": True, "username": username}), 200
+        
+        # Load cached recommendations on login (no wait for model calls)
+        cached_recs = get_cached_recommendations(user['id'])
+        
+        return jsonify({
+            "success": True, 
+            "username": username,
+            "cached_recommendations": cached_recs
+        }), 200
         
     except Exception as e:
         print(f"Login error: {e}")
@@ -197,7 +206,17 @@ def register():
             session.permanent = True
             session['user_id'] = user_id
             session['username'] = username
-            return jsonify({"success": True, "username": username}), 201
+            
+            # New users have no cached recommendations yet
+            return jsonify({
+                "success": True, 
+                "username": username,
+                "cached_recommendations": {
+                    "general": [],
+                    "last_added": [],
+                    "genre_based": []
+                }
+            }), 201
             
         except sqlite3.IntegrityError:
             conn.close()
