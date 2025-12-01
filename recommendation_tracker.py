@@ -34,12 +34,14 @@ def save_recommendation_set(user_id: int, recommendations: List[Dict],
         recommendations (list): List of recommendation dicts from model with:
             - title: Movie title
             - hybrid_score: Predicted recommendation score [0.0, 1.0]
-            - Other fields from model output
+            - scores: Dict with genre_sim, cast_sim, franchise_sim, user_rating_norm
+            - genres, overview, production_companies, cast_and_crew, etc.
         recommendation_type (str): Type of recommendation (general, last_added, genre_based)
         
     Returns:
         int: recommendation_set_id for later tracking
     """
+    import json
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     
@@ -70,11 +72,14 @@ def save_recommendation_set(user_id: int, recommendations: List[Dict],
             
             print(f"[TRACKER]   Rank {rank}: '{movie_title}' (id: {movie_id}, score: {predicted_score})")
             
+            # Serialize full recommendation data as JSON for later retrieval
+            full_data_json = json.dumps(rec)
+            
             cur.execute("""
                 INSERT INTO recommendation_set_items 
-                (recommendation_set_id, movie_id, movie_title, predicted_score, rank_position)
-                VALUES (?, ?, ?, ?, ?)
-            """, (recommendation_set_id, movie_id, movie_title, predicted_score, rank))
+                (recommendation_set_id, movie_id, movie_title, predicted_score, rank_position, full_data)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (recommendation_set_id, movie_id, movie_title, predicted_score, rank, full_data_json))
         
         conn.commit()
         print(f"[TRACKER] ✓ Successfully saved recommendation set {recommendation_set_id}")
@@ -439,10 +444,10 @@ def invalidate_old_recommendations(user_id: int, days: int = 30) -> int:
 
 def get_cached_recommendations(user_id: int, limit: int = 10) -> Dict[str, List]:
     """
-    Retrieve the most recent cached recommendations for a user.
+    Retrieve the most recent cached recommendations for a user with full movie details.
     
-    Loads previously generated recommendations from the database so we can
-    serve them instantly on login without waiting for model computation.
+    Returns recommendations exactly as the model generated them, including all scores
+    and metadata. These were previously saved in the recommendation_set_items.full_data column.
     
     Args:
         user_id (int): User ID
@@ -453,8 +458,9 @@ def get_cached_recommendations(user_id: int, limit: int = 10) -> Dict[str, List]
             - general: Most recent general recommendations
             - last_added: Most recent last_added recommendations
             - genre_based: Most recent genre_based recommendations
-            Each contains list of dicts with title, predicted_score, rank
+            Each contains full recommendation objects matching the model output format
     """
+    import json
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
@@ -468,11 +474,12 @@ def get_cached_recommendations(user_id: int, limit: int = 10) -> Dict[str, List]
     try:
         # For each recommendation type, get the most recent set
         for rec_type in ["general", "last_added", "genre_based"]:
+            print(f"[CACHE] Fetching {rec_type} recommendations for user {user_id}")
+            
+            # Get the most recent recommendation set for this type
             cur.execute("""
-                SELECT rsi.movie_title, rsi.predicted_score, rsi.rank_position, 
-                       rsi.movie_id, rs.id as set_id
-                FROM recommendation_set_items rsi
-                JOIN recommendation_sets rs ON rsi.recommendation_set_id = rs.id
+                SELECT rs.id as set_id
+                FROM recommendation_sets rs
                 WHERE rs.user_id = ? 
                 AND rs.recommendation_type = ?
                 AND rs.is_valid = 1
@@ -482,26 +489,42 @@ def get_cached_recommendations(user_id: int, limit: int = 10) -> Dict[str, List]
             
             recent_set = cur.fetchone()
             if not recent_set:
+                print(f"[CACHE] No {rec_type} recommendation set found for user {user_id}")
                 continue
             
             set_id = recent_set['set_id']
             
             # Get all items from this set
             cur.execute("""
-                SELECT movie_title, predicted_score, rank_position, movie_id
-                FROM recommendation_set_items
-                WHERE recommendation_set_id = ?
-                ORDER BY rank_position ASC
+                SELECT rsi.movie_title, rsi.full_data, rsi.rank_position
+                FROM recommendation_set_items rsi
+                WHERE rsi.recommendation_set_id = ?
+                ORDER BY rsi.rank_position ASC
                 LIMIT ?
             """, (set_id, limit))
             
             items = cur.fetchall()
+            print(f"[CACHE] Found {len(items)} items for {rec_type}")
+            
             for item in items:
-                result[rec_type].append({
-                    "title": item['movie_title'],
-                    "score": item['predicted_score'],
-                    "id": item['movie_id']
-                })
+                # Use full_data if available (contains complete recommendation with scores)
+                if item['full_data']:
+                    try:
+                        rec_obj = json.loads(item['full_data'])
+                        print(f"[CACHE]   ✓ Loaded full data for: {item['movie_title']}")
+                        result[rec_type].append(rec_obj)
+                    except json.JSONDecodeError as e:
+                        print(f"[CACHE]   ✗ Failed to parse full_data JSON for {item['movie_title']}: {e}")
+                        # Fallback: return basic info
+                        result[rec_type].append({
+                            "title": item['movie_title']
+                        })
+                else:
+                    print(f"[CACHE]   ⚠ No full_data available for: {item['movie_title']}")
+                    # Fallback: return basic info
+                    result[rec_type].append({
+                        "title": item['movie_title']
+                    })
         
         print(f"[CACHE] Retrieved {sum(len(v) for v in result.values())} cached recommendations for user {user_id}")
         return result
