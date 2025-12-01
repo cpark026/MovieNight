@@ -538,9 +538,6 @@ def get_recommendations():
             print("[DEBUG] No recommendations after filtering dislikes")
             return jsonify({"error": "No recommendations found"}), 404
         
-        # Save recommendations for later validation (AFTER filtering)
-        rec_set_id = save_recommendation_set(session['user_id'], recommendations, "general")
-        
         # Check if model needs revalidation
         revalidation_status = check_for_model_revalidation(session['user_id'])
         
@@ -595,6 +592,9 @@ def get_recommendations():
                 }
             }
             result.append(parsed)
+        
+        # Save fully parsed recommendations for caching (AFTER parsing, not before)
+        rec_set_id = save_recommendation_set(session['user_id'], result, "general")
         
         print(f"[DEBUG] Returning {len(result)} recommendations")
         return jsonify({
@@ -686,9 +686,6 @@ def get_last_watched_recommendations():
             print("[DEBUG] No recommendations returned from model")
             return jsonify({"error": "No recommendations found"}), 404
         
-        # Save recommendations for later validation
-        rec_set_id = save_recommendation_set(session['user_id'], recommendations, "last_added")
-        
         # Check if model needs revalidation
         revalidation_status = check_for_model_revalidation(session['user_id'])
         
@@ -743,6 +740,9 @@ def get_last_watched_recommendations():
                 }
             }
             result.append(parsed)
+        
+        # Save fully parsed recommendations for caching (AFTER parsing, not before)
+        rec_set_id = save_recommendation_set(session['user_id'], result, "last_added")
         
         print(f"[DEBUG] Returning {len(result)} recommendations")
         return jsonify({
@@ -834,9 +834,6 @@ def get_most_common_genre_recommendations():
             print("[DEBUG] No recommendations returned from model")
             return jsonify({"error": "No recommendations found"}), 404
 
-        # Save recommendations for later validation
-        rec_set_id = save_recommendation_set(session['user_id'], recommendations, "genre_based")
-        
         # Check if model needs revalidation
         revalidation_status = check_for_model_revalidation(session['user_id'])
 
@@ -887,7 +884,10 @@ def get_most_common_genre_recommendations():
             }
 
             result.append(parsed)
-
+        
+        # Save fully parsed recommendations for caching (AFTER parsing, not before)
+        rec_set_id = save_recommendation_set(session['user_id'], result, "genre_based")
+        
         print(f"[DEBUG] Returning {len(result)} recommendations")
 
         return jsonify({
@@ -1029,6 +1029,7 @@ def create_recommendations_tracking_tables():
         movie_title TEXT,
         predicted_score REAL,
         rank_position INTEGER,
+        full_data TEXT,
         FOREIGN KEY (recommendation_set_id) REFERENCES recommendation_sets(id) ON DELETE CASCADE
     )
     """)
