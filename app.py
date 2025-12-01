@@ -42,13 +42,52 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "movies.db")
 CSV_PATH = os.path.join(BASE_DIR, "output.csv")
 
-# Initialize model once at startup
-try:
-    import model
-    MODEL_READY = True
-except Exception as e:
-    print(f"Warning: Could not initialize model: {e}")
-    MODEL_READY = False
+# Lazy-load model on first use (avoids PySpark startup delay on app initialization)
+model = None
+MODEL_READY = False
+
+# CSV cache (lazy-loaded)
+_movie_data_cache = None
+
+def get_model():
+    """Lazy-load model on first request. Returns model or None if initialization failed."""
+    global model, MODEL_READY
+    if model is not None:
+        return model
+    
+    try:
+        import model as model_module
+        model = model_module
+        MODEL_READY = True
+        print("[INFO] Model initialized on first request")
+        return model
+    except Exception as e:
+        print(f"[ERROR] Could not initialize model: {e}")
+        MODEL_READY = False
+        return None
+
+def load_movie_data():
+    """Load movie CSV data once and cache it. Dramatically speeds up subsequent requests."""
+    global _movie_data_cache
+    if _movie_data_cache is not None:
+        return _movie_data_cache
+    
+    print(f"[DEBUG] Loading CSV from: {CSV_PATH}")
+    movie_data = {}
+    
+    with open(CSV_PATH, 'r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        next(reader)  # Skip header
+        for row in reader:
+            if len(row) > 1:
+                movie_id = row[1].strip()  # ID is at index 1
+                title = row[4].strip()  # Title is at index 4
+                movie_data[movie_id] = row
+                movie_data[title] = row
+    
+    print(f"[DEBUG] Loaded {len(movie_data)} movies into cache")
+    _movie_data_cache = movie_data
+    return _movie_data_cache
 
 # Initialize feedback system
 try:
@@ -380,13 +419,15 @@ def get_recommendations():
     if 'user_id' not in session:
         return jsonify({"error": "Not authenticated"}), 401
     
-    if not MODEL_READY:
+    # Lazy-load model on first request
+    current_model = get_model()
+    if not current_model:
         return jsonify({"error": "Model not initialized"}), 500
     
     try:
         print(f"[DEBUG] Fetching top 10 recommendations for user {session['user_id']}...")
         # Request 15 to account for filtering disliked movies, aim to return 10
-        recommendations = model.get_top_recommendations(session['user_id'], top_n=15)
+        recommendations = current_model.get_top_recommendations(session['user_id'], top_n=15)
         print(f"[DEBUG] Received {len(recommendations)} recommendations")
         
         if not recommendations:
@@ -453,23 +494,8 @@ def get_recommendations():
         # Check if model needs revalidation
         revalidation_status = check_for_model_revalidation(session['user_id'])
         
-        print(f"[DEBUG] Loading CSV from: {CSV_PATH}")
-        movie_data = {}
-        
-        with open(CSV_PATH, 'r', encoding='utf-8') as f:
-            reader = csv.reader(f)
-            next(reader)
-            for row in reader:
-                if len(row) > 1:
-                    movie_id = row[1].strip()  # ID is at index 1
-                    title = row[4].strip()  # Title is at index 4
-                    movie_data[movie_id] = row
-                    movie_data[title] = row
-                    if len(movie_data) <= 10:
-                        print(f"[DEBUG] Added: id='{movie_id}', title='{title}'")
-        
-        print(f"[DEBUG] Loaded {len(movie_data)} movies")
-        print(f"[DEBUG] Sample keys: {list(movie_data.keys())[:4]}")
+        # Load cached movie data (speeds up subsequent requests significantly)
+        movie_data = load_movie_data()
         
         result = []
         for idx, rec in enumerate(recommendations):
@@ -543,7 +569,9 @@ def get_last_watched_recommendations():
     if 'user_id' not in session:
         return jsonify({"error": "Not authenticated"}), 401
     
-    if not MODEL_READY:
+    # Lazy-load model on first request
+    current_model = get_model()
+    if not current_model:
         return jsonify({"error": "Model not initialized"}), 500
     
     try:
@@ -551,7 +579,7 @@ def get_last_watched_recommendations():
         
         print(f"[DEBUG] Fetching top 10 recommendations from model...")
         # Request 15 to account for filtering disliked movies, aim to return 10
-        recommendations = model.get_recommendations_for_last_added(session['user_id'], top_n=15)
+        recommendations = current_model.get_recommendations_for_last_added(session['user_id'], top_n=15)
         print(f"[DEBUG] Received {len(recommendations)} recommendations")
         
         # Filter out disliked movies
@@ -614,23 +642,8 @@ def get_last_watched_recommendations():
         # Check if model needs revalidation
         revalidation_status = check_for_model_revalidation(session['user_id'])
         
-        print(f"[DEBUG] Loading CSV from: {CSV_PATH}")
-        movie_data = {}
-        
-        with open(CSV_PATH, 'r', encoding='utf-8') as f:
-            reader = csv.reader(f)
-            next(reader)
-            for row in reader:
-                if len(row) > 1:
-                    movie_id = row[1].strip()  # ID is at index 1
-                    title = row[4].strip()  # Title is at index 4
-                    movie_data[movie_id] = row
-                    movie_data[title] = row
-                    if len(movie_data) <= 10:
-                        print(f"[DEBUG] Added: id='{movie_id}', title='{title}'")
-        
-        print(f"[DEBUG] Loaded {len(movie_data)} movies")
-        print(f"[DEBUG] Sample keys: {list(movie_data.keys())[:4]}")
+        # Load cached movie data (speeds up subsequent requests significantly)
+        movie_data = load_movie_data()
         
         result = []
         for idx, rec in enumerate(recommendations):
@@ -704,7 +717,9 @@ def get_most_common_genre_recommendations():
     if 'user_id' not in session:
         return jsonify({"error": "Not authenticated"}), 401
     
-    if not MODEL_READY:
+    # Lazy-load model on first request
+    current_model = get_model()
+    if not current_model:
         return jsonify({"error": "Model not initialized"}), 500
 
     try:
@@ -712,7 +727,7 @@ def get_most_common_genre_recommendations():
 
         print("[DEBUG] Fetching most-common-genre recommendations...")
         # Request 15 to account for filtering disliked movies, aim to return 10
-        recommendations = model.get_recommendations_by_most_common_genre(session['user_id'], top_n=15)
+        recommendations = current_model.get_recommendations_by_most_common_genre(session['user_id'], top_n=15)
         print(f"[DEBUG] Received {len(recommendations)} recommendations")
 
         # Filter out disliked movies
@@ -775,22 +790,8 @@ def get_most_common_genre_recommendations():
         # Check if model needs revalidation
         revalidation_status = check_for_model_revalidation(session['user_id'])
 
-        print(f"[DEBUG] Loading CSV from: {CSV_PATH}")
-
-        movie_data = {}
-        with open(CSV_PATH, "r", encoding="utf-8") as f:
-            reader = csv.reader(f)
-            next(reader)
-            for row in reader:
-                if len(row) > 1:
-                    movie_id = row[1].strip()  # ID is at index 1
-                    title = row[4].strip()  # Title is at index 4
-                    movie_data[movie_id] = row
-                    movie_data[title] = row
-                    if len(movie_data) <= 10:
-                        print(f"[DEBUG] Added: id='{movie_id}', title='{title}'")
-
-        print(f"[DEBUG] Loaded {len(movie_data)} movies")
+        # Load cached movie data (speeds up subsequent requests significantly)
+        movie_data = load_movie_data()
 
         result = []
         for idx, rec in enumerate(recommendations):
