@@ -44,11 +44,6 @@ Thumbs.db
 *.sqlite
 *.sqlite3
 
-# Large CSV files (too big for GitHub)
-*.csv
-output.csv
-Cleaned/*.csv
-
 # Doxygen
 doxygen_output/
 Doxyfile
@@ -66,7 +61,6 @@ install-doxygen.bat
 !TUNER_SYSTEM_SUMMARY.md
 !README_TUNER.md
 !TUNER_IMPLEMENTATION_COMPLETE.md
-Raw/*.csv
 
 # Environment variables
 .env
@@ -89,9 +83,6 @@ settings.local.py
 
 # Logs
 *.log
-
-# Raw data (keep cleaned data)
-Raw/
 
 # Temporary files
 temp/
