@@ -34,7 +34,7 @@ async function addToWatchlistTMDB(item) {
         title.textContent = item.title || item.name;
 
         const poster = document.createElement("img");
-        poster.src = item.poster_path 
+        poster.src = item.poster_path
             ? "https://image.tmdb.org/t/p/w500" + item.poster_path
             : "../static/placeholder.png";
         poster.style.cssText = "width: 200px; margin: 10px 0;";
@@ -130,12 +130,20 @@ async function fetchAndDisplayTMDBResults() {
             fetchWatchlistIDs()
         ]);
 
-        const data = await response.json();
-        
+        let data = await response.json();
+
         if (!data || data.length === 0) {
             resultsDiv.innerHTML = "<p>No results found.</p>";
             return;
         }
+
+        data = data.filter(item => {
+            const hasGenres = item.genres && item.genres.trim() !== "";
+            const hasCompanies = item.production_companies && item.production_companies.trim() !== "";
+
+            return hasGenres && hasCompanies;
+        });
+
 
         // Convert to Set for O(1) lookup
         const watchlistSet = new Set(watchlistIds);
@@ -143,6 +151,7 @@ async function fetchAndDisplayTMDBResults() {
         const title = item => item.title || item.name;
 
         data.forEach(item => {
+            console.log(item);
             const div = document.createElement("div");
             div.className = "result";
 
